@@ -3,7 +3,7 @@ import { CouldNotFindUser, UnableToLogout, UserAlreadyExists, UserCreationFailed
 import {
     ContainsInvalidChars,
     ExcessiveBodyProperties,
-    InputExceedMaxLimit,
+    InvalidLength,
     InvalidParameterType,
     InvalidPassword,
     InvalidPropertyType,
@@ -30,8 +30,10 @@ export default class UserService {
             if (typeof payload.username !== 'string') throw new InvalidPropertyType('', 'string', 'username');
             if (typeof payload.password !== 'string') throw new InvalidPropertyType('', 'string', 'password');
 
-            if (Validator.hasSpecialCharacters(payload.username, '_ALL')) throw new ContainsInvalidChars('', 'username');
-            if (payload.username.length > UserGlobals.USERNAME_MAXLENGTH) throw new InputExceedMaxLimit('', 'username');
+            if (Validator.hasSpecialCharacters(payload.username, '_ALL')) 
+                throw new ContainsInvalidChars('', 'username');
+            if (payload.username.length > UserGlobals.USERNAME_MAXLENGTH) 
+                throw new InvalidLength('', 'username', `<=${UserGlobals.USERNAME_MAXLENGTH}`);
 
             // Check if password is strong & hash it
             const _password = new Password(payload.password);
@@ -65,7 +67,7 @@ export default class UserService {
                 !(e instanceof PropertyIsMissing) &&
                 !(e instanceof InvalidPropertyType) &&
                 !(e instanceof ContainsInvalidChars) &&
-                !(e instanceof InputExceedMaxLimit) &&
+                !(e instanceof InvalidLength) &&
                 !(e instanceof PasswordIsWeak) &&
                 !(e instanceof FailedToRenderHash) &&
                 !(e instanceof UserAlreadyExists) &&

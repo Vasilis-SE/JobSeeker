@@ -6,6 +6,7 @@ export default class CompanyModel implements ICompanyProperties {
     id!: number;
     userid!: number;
     name!: string;
+    tax_number!: number;
     created_at!: number;
     deleted_at!: number;
 
@@ -17,6 +18,7 @@ export default class CompanyModel implements ICompanyProperties {
         this.setId(company.id ? company.id : 0);
         this.setUserId(company.userid ? company.userid : 0);
         this.setName(company.name ? company.name : '');
+        this.setTaxNumber(company.tax_number ? company.tax_number : 0);
         this.setCreatedAt(company.created_at ? company.created_at : 0);
         this.setDeletedAt(company.deleted_at ? company.deleted_at : 0);
     }
@@ -44,11 +46,11 @@ export default class CompanyModel implements ICompanyProperties {
 
     async createCompany(): Promise<boolean> {
         try {
-            const queryStr = `INSERT INTO companies (userid, name, created_at) 
-                VALUES ($1, $2, $3) 
+            const queryStr = `INSERT INTO companies (userid, name, tax_number, created_at) 
+                VALUES ($1, $2, $3, $4) 
                 RETURNING id`;
             const query = await PostgreSQL.client.query(queryStr, 
-                [this.getUserId(), this.getName(), this.getCreatedAt()]);
+                [this.getUserId(), this.getName(), this.getTaxNumber(), this.getCreatedAt()]);
 
             if (query.rowCount === 0) throw Error();
 
@@ -63,10 +65,10 @@ export default class CompanyModel implements ICompanyProperties {
     async updateCompany(): Promise<boolean> {
         try {
             const queryStr = `UPDATE companies SET
-                name = $1 
-                WHERE id = $2 AND userid = $3`;
+                name = $1, tax_number = $2
+                WHERE id = $3 AND userid = $4`;
             const query = await PostgreSQL.client.query(queryStr, 
-                [this.getName(), this.getId(), this.getUserId()]);
+                [this.getName(), this.getTaxNumber(), this.getId(), this.getUserId()]);
                 
             if (query.rowCount === 0) throw Error();
             return true;
@@ -100,6 +102,9 @@ export default class CompanyModel implements ICompanyProperties {
     getName(): string {
         return this.name;
     }
+    getTaxNumber(): number {
+        return this.tax_number;
+    }
     getCreatedAt(): number {
         return this.created_at;
     }
@@ -115,6 +120,9 @@ export default class CompanyModel implements ICompanyProperties {
     }
     setName(name: string): void {
         this.name = name;
+    }
+    setTaxNumber(tax_number: number): void {
+        this.tax_number = Number(tax_number);
     }
     setCreatedAt(created_at: number): void {
         this.created_at = Number(created_at);

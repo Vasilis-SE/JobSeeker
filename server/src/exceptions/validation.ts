@@ -81,19 +81,21 @@ export class PasswordIsWeak implements IException {
     }
 }
 
-export class InputExceedMaxLimit implements IException {
+export class InvalidLength implements IException {
     public status: boolean;
     public message: string;
     public errorCode: string;
     public httpCode: number;
     public property?: string;
+    public expected?: string;
 
-    constructor(message?: string, p?: string) {
+    constructor(message?: string, p?: string, e?: string) {
         this.status = false;
-        this.message = message ? message : 'Input exceeds max limit length...';
+        this.message = message ? message : 'Input has invalid length...';
         this.errorCode = 'ev7';
         this.httpCode = HttpCodes.BAD_REQUEST;
         this.property = p;
+        this.expected = e;
     }
 }
 
