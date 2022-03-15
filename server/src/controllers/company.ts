@@ -14,7 +14,21 @@ export default class CompanyController {
         // this._service = new UserService();
     }
 
-    async getCompanies(req: InjectedRequest, res: InjectedResponse, next: NextFunction): Promise<void> {
+    async createCompany(req: InjectedRequest, res: InjectedResponse, next: NextFunction): Promise<void> {
+        const params: IUserProperties = { id: req.user.id };
+        const response: ISuccessfulResponse | IFailedResponse = await this._service.getUsers(params, {});
+        res.response = response;
+        next();
+    }
+
+    async updateCompany(req: InjectedRequest, res: InjectedResponse, next: NextFunction): Promise<void> {
+        const params: IUserProperties = { id: req.user.id };
+        const response: ISuccessfulResponse | IFailedResponse = await this._service.getUsers(params, {});
+        res.response = response;
+        next();
+    }
+
+    async deleteCompany(req: InjectedRequest, res: InjectedResponse, next: NextFunction): Promise<void> {
         const params: IUserProperties = { id: req.user.id };
         const response: ISuccessfulResponse | IFailedResponse = await this._service.getUsers(params, {});
         res.response = response;
