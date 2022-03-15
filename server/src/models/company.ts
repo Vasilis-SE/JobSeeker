@@ -29,7 +29,7 @@ export default class CompanyModel implements ICompanyProperties {
 
             const query = await PostgreSQL.client.query(`SELECT 
                 ${filters.fields ? filters.fields.join(', ') : '*'}
-                FROM users 
+                FROM companies 
                 ${wherePart ? `WHERE ${wherePart}` : ''}
                 ${'orderby' in filters ? `ORDER BY ${filters.orderby}` : ''}
                 ${'limit' in filters ? `LIMIT ${filters.limit}` : ''}`);
