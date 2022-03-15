@@ -36,4 +36,4 @@ export interface IJobFilters {
     limit?: string;
 }
 
-export type IListOfCompanies = Array<IJobProperties>;
+export type IListOfJobs = Array<IJobProperties>;
