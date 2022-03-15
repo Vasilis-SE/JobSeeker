@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import userRoutes from './user';
+import companyRoutes from './company';
 
 /**
  * Main router class that 'merges' all the separate routes into a single
@@ -16,6 +17,7 @@ export default class Routes {
     private initialize(): void {
         // Load all seperate routes
         this._routes.use('/user', userRoutes);
+        this._routes.use('/company', companyRoutes);
     }
 
     public getAppRoutes(): Router {
