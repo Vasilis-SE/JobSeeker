@@ -42,7 +42,52 @@ export default class CompanyModel implements ICompanyProperties {
         }
     }
 
+    async createCompany(): Promise<boolean> {
+        try {
+            const queryStr = `INSERT INTO companies (userid, name, created_at) 
+                VALUES ($1, $2, $3) 
+                RETURNING id`;
+            const query = await PostgreSQL.client.query(queryStr, 
+                [this.getUserId(), this.getName(), this.getCreatedAt()]);
 
+            if (query.rowCount === 0) throw Error();
+
+            // Set the newly created id
+            this.setId(query.rows[0].id);
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    async updateCompany(): Promise<boolean> {
+        try {
+            const queryStr = `UPDATE companies SET
+                name = $1 
+                WHERE id = $2 AND userid = $3`;
+            const query = await PostgreSQL.client.query(queryStr, 
+                [this.getName(), this.getId(), this.getUserId()]);
+                
+            if (query.rowCount === 0) throw Error();
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    async softRemoveCompany(): Promise<boolean> {
+        try {
+            const queryStr = `UPDATE companies SET 
+                deleted_at = $1
+                WHERE id = $2 AND userid = $3`;
+            const query = await PostgreSQL.client.query(queryStr, 
+                [this.getDeletedAt(), this.getId(), this.getUserId()]);
+            if (query.rowCount === 0) throw Error();
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
 
 
     // Getters - Setters
