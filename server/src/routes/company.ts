@@ -24,8 +24,9 @@ companyRoutes.patch(
 );
 
 companyRoutes.delete(
-    '/:id([0-9]+)',
+    '/:id',
     (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _security.authenticate(req, res, next),
+    (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _controller.deleteCompany(req, res, next),
     (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _baseController.send(req, res, next),
 );
 

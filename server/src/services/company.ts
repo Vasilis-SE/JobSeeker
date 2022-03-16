@@ -1,4 +1,4 @@
-import { CompanyAlreadyExists, CouldNotDeleteCompany, CouldNotFindCompany, FailedToCreateCompany, FailedToUpdateCompany } from '../exceptions/company';
+import { CompanyAlreadyExists, CompanyIsAlreadyDeleted, CouldNotDeleteCompany, CouldNotFindCompany, FailedToCreateCompany, FailedToUpdateCompany } from '../exceptions/company';
 import {
     ContainsInvalidChars,
     ExcessiveBodyProperties,
@@ -53,12 +53,13 @@ export default class CompanyService {
 
             const response: ISuccessfulResponse = {
                 status: true,
-                httpCode: HttpCodes.OK,
+                httpCode: HttpCodes.CREATED,
                 data: ObjectHandler.getResource(_model),
             };
             return response;
         } catch (e) {
             if (
+                !(e instanceof PropertyIsMissing) &&
                 !(e instanceof InvalidParameterType) &&
                 !(e instanceof ExcessiveBodyProperties) &&
                 !(e instanceof InvalidPropertyType) &&
@@ -66,8 +67,7 @@ export default class CompanyService {
                 !(e instanceof InvalidLength) &&
                 !(e instanceof CompanyAlreadyExists) &&
                 !(e instanceof FailedToCreateCompany)
-            )
-                throw e;
+            ) throw e;
 
             const errorResource: any = { status: false, ...ObjectHandler.getResource(e) };
             const error: IFailedResponse = errorResource;
@@ -112,10 +112,16 @@ export default class CompanyService {
             _model.setTaxNumber(payload.tax_number);
             if (!(await _model.updateCompany())) throw new FailedToUpdateCompany();
 
+            // Since everything went well. Get the previous resource update
+            // its values and send it as a response back.
+            const resource: ICompanyProperties = exists[0];
+            resource.name = payload.name;
+            resource.tax_number = payload.tax_number;
+
             const response: ISuccessfulResponse = {
                 status: true,
                 httpCode: HttpCodes.OK,
-                data: ObjectHandler.getResource(_model),
+                data: ObjectHandler.getResource(resource),
             };
             return response;
         } catch (e) {
@@ -157,28 +163,38 @@ export default class CompanyService {
             const exists = await _model.getCompanies();
             if (!exists) throw new CouldNotFindCompany();
 
+            // Check if company is already been deleted
+            if(exists[0].deleted_at > 0)
+                throw new CompanyIsAlreadyDeleted();
+            
             // Soft delte company by settign deleted_at field
             _model.setDeletedAt(Math.floor(Date.now() / 1000));
             if(!await _model.softRemoveCompany())
                 throw new CouldNotDeleteCompany();
 
+            // Since everything went well. Get the previous resource update
+            // its values and send it as a response back.
+            const resource: ICompanyProperties = exists[0];
+            resource.deleted_at = _model.getDeletedAt();
+
             // Return success back and also the resource that was soft deleted.
             const response: ISuccessfulResponse = {
                 status: true,
                 httpCode: HttpCodes.OK,
-                data: ObjectHandler.getResource(exists),
+                data: ObjectHandler.getResource(resource),
             };
             return response;
         } catch (e) {
             if (
                 !(e instanceof InvalidParameterType) && 
                 !(e instanceof ExcessiveBodyProperties) && 
+                !(e instanceof CompanyIsAlreadyDeleted) && 
                 !(e instanceof PropertyIsMissing) && 
                 !(e instanceof InvalidPropertyType) && 
                 !(e instanceof CouldNotFindCompany) && 
                 !(e instanceof CouldNotDeleteCompany) 
             ) throw e;
-
+            
             const errorResource: any = { status: false, ...ObjectHandler.getResource(e) };
             const error: IFailedResponse = errorResource;
             return error;

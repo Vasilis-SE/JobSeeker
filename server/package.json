@@ -9,6 +9,7 @@
     "lint": "eslint --quiet --fix ./src/**/*.ts",
     "build": "gulp",
     "test": "jest --watchAll --no-cache",
+    "redis:cli": "docker exec -it redis bash",
     "docker:up:prod": "docker-compose --env-file ./src/config/.env up",
     "docker:build:prod": "docker-compose --env-file ./src/config/.env build",
     "docker:up:dev": "docker-compose --env-file ./src/config/.env.dev up",

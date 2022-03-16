@@ -70,3 +70,17 @@ export class CouldNotDeleteCompany implements IException {
         this.httpCode = HttpCodes.SERVER_ERROR;
     }
 }
+
+export class CompanyIsAlreadyDeleted implements IException {
+    status: boolean;
+    message: string;
+    errorCode: string;
+    httpCode: number;
+
+    constructor(message?: string) {
+        this.status = false;
+        this.message = message ? message : 'This particular company is already deleted...';
+        this.errorCode = 'cp6';
+        this.httpCode = HttpCodes.BAD_REQUEST;
+    }
+}

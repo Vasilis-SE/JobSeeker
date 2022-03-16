@@ -17,6 +17,7 @@ export default class BaseController {
 
         const response = res.response;
         const httpCode = response.httpCode;
+        delete response.httpCode;
         return res.status(httpCode).json(response);
     }
 }
