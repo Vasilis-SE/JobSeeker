@@ -7,7 +7,7 @@ export interface IJobProperties {
     deleted_at?: number;
 }
 
-export interface ICompany extends IJobProperties {
+export interface IJob extends IJobProperties {
     getId(): number;
     getCompanyId(): number;
     getTitle(): string;
@@ -23,7 +23,7 @@ export interface ICompany extends IJobProperties {
     setDeletedAt(deleted_at: number): void;
 }
 
-export enum CompanyGlobals {
+export enum JobGlobals {
     TITLE_MAXLENGTH = 60,
     QUERY_LENGTH = 10,
     QUERY_ORDER_FIELD = 'id',

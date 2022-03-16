@@ -1,8 +1,8 @@
 import PostgreSQL from "../connections/postgres";
 import ObjectHandler from "../helpers/objectHandler";
-import { ICompanyFilters, ICompanyProperties, IListOfCompanies } from "../interfaces/company";
+import { ICompany, ICompanyFilters, ICompanyProperties, IListOfCompanies } from "../interfaces/company";
 
-export default class CompanyModel implements ICompanyProperties {
+export default class CompanyModel implements ICompany {
     id!: number;
     userid!: number;
     name!: string;
