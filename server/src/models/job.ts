@@ -22,12 +22,7 @@ export default class JobModel implements IJob {
         this.setCreatedAt(job.created_at ? job.created_at : 0)
         this.setDeletedAt(job.deleted_at ? job.deleted_at : 0)
     }
-
-    // OK: Get jobs
-    // OK: Create a new job
-    // OK: Update a current job
-    // TODO: Soft delete a job
-
+    
     async getJobs(filters: IJobFilters = {}): Promise<IListOfJobs | boolean> {
         try {
             let results: IListOfJobs = [];

@@ -1,28 +1,71 @@
-import { ExcessiveBodyProperties, InvalidParameterType } from "../exceptions/validation";
+import { FailedToCreateJob, JobAlreadyExists } from "../exceptions/job";
+import { ContainsInvalidChars, ExcessiveBodyProperties, InvalidLength, InvalidParameterType, InvalidPropertyType, PropertyIsMissing } from "../exceptions/validation";
+import { HttpCodes } from "../helpers/httpCodesEnum";
 import ObjectHandler from "../helpers/objectHandler";
 import Validator from "../helpers/validator";
 import { IRequestQueryFilters } from "../interfaces/express";
 import { IJobFilters, IJobProperties, JobGlobals } from "../interfaces/job";
 import { IFailedResponse, ISuccessfulResponse } from "../interfaces/response";
 import { IUserProperties } from "../interfaces/user";
+import JobModel from "../models/job";
 
 export default class CompanyService {
 
-    async createJob(
-        payload: IJobProperties,
-        user: IUserProperties,
-    ): Promise<ISuccessfulResponse | IFailedResponse> {
+    async createJob(payload: IJobProperties): Promise<ISuccessfulResponse | IFailedResponse> {
         try {
-            const validProperties = ['name', 'tax_number'];
+            const validProperties = ['companyid', 'title', 'description'];
             if (Object.keys(payload).length > validProperties.length) throw new ExcessiveBodyProperties();
+            
+            if (!('companyid' in payload) || !payload.companyid) throw new PropertyIsMissing('', 'companyid');
+            if (!('title' in payload) || !payload.title) throw new PropertyIsMissing('', 'title');
+            if (!('description' in payload) || !payload.description) throw new PropertyIsMissing('', 'description');
 
-            return null;
+            if (!Validator.isNumber(payload.companyid.toString())) 
+                throw new InvalidPropertyType('', 'integer', 'companyid');
+            if (typeof payload.title !== 'string') 
+                throw new InvalidPropertyType('', 'string', 'title');
+            if (typeof payload.description !== 'string') 
+                throw new InvalidPropertyType('', 'string', 'description');
+            
+            if (payload.title.length != JobGlobals.TITLE_MAXLENGTH)
+                throw new InvalidLength('', 'title', `>=${JobGlobals.TITLE_MAXLENGTH}`);
+
+            if (Validator.hasSpecialCharacters(payload.title, '_ALLEXCDD')) 
+                throw new ContainsInvalidChars('', 'title');
+            if (Validator.hasSpecialCharacters(payload.description, '_ALLEXCDD')) 
+                throw new ContainsInvalidChars('', 'description');
+
+            const _model = new JobModel();
+            _model.setTitle(payload.title);
+            _model.setCompanyId(payload.companyid);
+
+            // Check if job exists with its title and the same company.
+            const exists = await _model.getJobs();
+            if (exists) throw new JobAlreadyExists();
+
+            // Populate rest of data & add new job
+            _model.setCreatedAt(Math.floor(Date.now() / 1000));
+            if (!(await _model.createJob())) 
+                throw new FailedToCreateJob();
+
+            const response: ISuccessfulResponse = {
+                status: true,
+                httpCode: HttpCodes.CREATED,
+                data: ObjectHandler.getResource(_model),
+            };
+            return response;
         } catch (e) {
             if (
                 !(e instanceof InvalidParameterType) &&
-                !(e instanceof ExcessiveBodyProperties)  
+                !(e instanceof ExcessiveBodyProperties) &&
+                !(e instanceof PropertyIsMissing) &&
+                !(e instanceof InvalidPropertyType) &&
+                !(e instanceof InvalidLength) &&
+                !(e instanceof ContainsInvalidChars) &&
+                !(e instanceof JobAlreadyExists) &&
+                !(e instanceof FailedToCreateJob)
             ) throw e;
-
+            
             const errorResource: any = { status: false, ...ObjectHandler.getResource(e) };
             const error: IFailedResponse = errorResource;
             return error;
