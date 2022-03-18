@@ -14,7 +14,7 @@ export default class JobModel implements IJob {
         this._setProperties(job);
     }
 
-    private _setProperties(job: IJobProperties = {}): void {
+    _setProperties(job: IJobProperties = {}): void {
         this.setId(job.id ? job.id : 0)
         this.setCompanyId(job.companyid ? job.companyid : 0)
         this.setTitle(job.title ? job.title : '')
@@ -50,7 +50,7 @@ export default class JobModel implements IJob {
                 VALUES ($1, $2, $3, $4) 
                 RETURNING id`;
             const query = await PostgreSQL.client.query(queryStr, 
-                [this.getCompanyId(), this.getTitle(), this.getDescription(), this.getDeletedAt()]);
+                [this.getCompanyId(), this.getTitle(), this.getDescription(), this.getCreatedAt()]);
 
             if (query.rowCount === 0) throw Error();
 
@@ -64,11 +64,23 @@ export default class JobModel implements IJob {
 
     async updateJob(): Promise<boolean> {
         try {
+            const resource: any = ObjectHandler.getResource(this);
+            delete resource.id;
+
+            let i = 1;
+            let prepStatements = [];
+            let values = [];
+            for(let [key, value] of Object.entries(resource)) {
+                prepStatements.push(` ${key} = $${i} `);
+                values.push(value);
+                i++;
+            }
+            values.push(this.getId());
+        
             const queryStr = `UPDATE jobs SET
-                companyid = $1, title = $2, description = $3
-                WHERE id = $4`;
-            const query = await PostgreSQL.client.query(queryStr, 
-                [this.getCompanyId(), this.getTitle(), this.getDescription(), this.getId()]);
+                ${prepStatements.join(', ')}
+                WHERE id = $${i}`;
+            const query = await PostgreSQL.client.query(queryStr, values);
                 
             if (query.rowCount === 0) throw Error();
             return true;
