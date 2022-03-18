@@ -7,7 +7,7 @@ import { IFailedResponse, ISuccessfulResponse, ISuccessfulResponseData } from '.
 import { InvalidTokenProvided } from '../exceptions/security';
 import ObjectHandler from '../helpers/objectHandler';
 import UserModel from '../models/user';
-import { CouldNotFindUser } from '../exceptions/user';
+import { CouldNotFindResource } from '../exceptions/resource';
 
 // Load enviromentals
 require('../bin/env');
@@ -33,7 +33,7 @@ export default class Security {
                     // can use the data whenever it wants (logging movements).
                     const _model = new UserModel({ id: userid });
                     const user = await _model.getUsers({ fields: ['id', 'username', 'created_at'] });
-                    if (!user) throw new CouldNotFindUser();
+                    if (!user) throw new CouldNotFindResource();
 
                     done(null, user[0]);
                 } catch (err) {

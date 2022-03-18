@@ -1,6 +1,6 @@
-import PostgreSQL from "../connections/postgres";
-import ObjectHandler from "../helpers/objectHandler";
-import { IJob, IJobFilters, IJobProperties, IListOfJobs } from "../interfaces/job";
+import PostgreSQL from '../connections/postgres';
+import ObjectHandler from '../helpers/objectHandler';
+import { IJob, IJobFilters, IJobProperties, IListOfJobs } from '../interfaces/job';
 
 export default class JobModel implements IJob {
     id!: number;
@@ -15,14 +15,14 @@ export default class JobModel implements IJob {
     }
 
     _setProperties(job: IJobProperties = {}): void {
-        this.setId(job.id ? job.id : 0)
-        this.setCompanyId(job.companyid ? job.companyid : 0)
-        this.setTitle(job.title ? job.title : '')
-        this.setDescription(job.description ? job.description : '')
-        this.setCreatedAt(job.created_at ? job.created_at : 0)
-        this.setDeletedAt(job.deleted_at ? job.deleted_at : 0)
+        this.setId(job.id ? job.id : 0);
+        this.setCompanyId(job.companyid ? job.companyid : 0);
+        this.setTitle(job.title ? job.title : '');
+        this.setDescription(job.description ? job.description : '');
+        this.setCreatedAt(job.created_at ? job.created_at : 0);
+        this.setDeletedAt(job.deleted_at ? job.deleted_at : 0);
     }
-    
+
     async getJobs(filters: IJobFilters = {}): Promise<IListOfJobs | boolean> {
         try {
             let results: IListOfJobs = [];
@@ -49,8 +49,12 @@ export default class JobModel implements IJob {
             const queryStr = `INSERT INTO jobs (companyid, title, description, created_at) 
                 VALUES ($1, $2, $3, $4) 
                 RETURNING id`;
-            const query = await PostgreSQL.client.query(queryStr, 
-                [this.getCompanyId(), this.getTitle(), this.getDescription(), this.getCreatedAt()]);
+            const query = await PostgreSQL.client.query(queryStr, [
+                this.getCompanyId(),
+                this.getTitle(),
+                this.getDescription(),
+                this.getCreatedAt(),
+            ]);
 
             if (query.rowCount === 0) throw Error();
 
@@ -70,18 +74,18 @@ export default class JobModel implements IJob {
             let i = 1;
             let prepStatements = [];
             let values = [];
-            for(let [key, value] of Object.entries(resource)) {
+            for (let [key, value] of Object.entries(resource)) {
                 prepStatements.push(` ${key} = $${i} `);
                 values.push(value);
                 i++;
             }
             values.push(this.getId());
-        
+
             const queryStr = `UPDATE jobs SET
                 ${prepStatements.join(', ')}
                 WHERE id = $${i}`;
             const query = await PostgreSQL.client.query(queryStr, values);
-                
+
             if (query.rowCount === 0) throw Error();
             return true;
         } catch (error) {
@@ -94,8 +98,7 @@ export default class JobModel implements IJob {
             const queryStr = `UPDATE jobs SET 
                 deleted_at = $1
                 WHERE id = $2`;
-            const query = await PostgreSQL.client.query(queryStr, 
-                [this.getDeletedAt(), this.getId()]);
+            const query = await PostgreSQL.client.query(queryStr, [this.getDeletedAt(), this.getId()]);
             if (query.rowCount === 0) throw Error();
             return true;
         } catch (error) {

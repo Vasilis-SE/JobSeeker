@@ -70,3 +70,16 @@ export class CouldNotDeleteResource implements IException {
         this.httpCode = HttpCodes.SERVER_ERROR;
     }
 }
+export class ResourceIsAlreadyDeleted implements IException {
+    status: boolean;
+    message: string;
+    errorCode: string;
+    httpCode: number;
+
+    constructor(message?: string) {
+        this.status = false;
+        this.message = message ? message : 'The resources seems to already be deleted...';
+        this.errorCode = 'rs6';
+        this.httpCode = HttpCodes.BAD_REQUEST;
+    }
+}

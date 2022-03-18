@@ -1,5 +1,6 @@
+import { CouldNotFindResource, FailedToCreateResource, ResourceAlreadyExists } from '../exceptions/resource';
 import { FailedToRenderHash } from '../exceptions/security';
-import { CouldNotFindUser, UnableToLogout, UserAlreadyExists, UserCreationFailed } from '../exceptions/user';
+import { UnableToLogout } from '../exceptions/user';
 import {
     ContainsInvalidChars,
     ExcessiveBodyProperties,
@@ -46,13 +47,13 @@ export default class UserService {
             _model.setUsername(payload.username);
 
             const exists: IListOfUsers | boolean = await _model.getUsers();
-            if (exists) throw new UserAlreadyExists();
+            if (exists) throw new ResourceAlreadyExists();
 
             // Set to model the hashed password
             _model.setPassword(_password.getPassword());
             _model.setCreatedAtStamp(Math.floor(Date.now() / 1000));
 
-            if (!(await _model.createUser())) throw new UserCreationFailed();
+            if (!(await _model.createUser())) throw new FailedToCreateResource();
 
             _model.setPassword(''); // clean passowrd so that it wont be displayed on response
             const response: ISuccessfulResponse = {
@@ -64,14 +65,15 @@ export default class UserService {
         } catch (e) {
             if (
                 !(e instanceof ExcessiveBodyProperties) &&
+                !(e instanceof ExcessiveBodyProperties) &&
                 !(e instanceof PropertyIsMissing) &&
                 !(e instanceof InvalidPropertyType) &&
                 !(e instanceof ContainsInvalidChars) &&
                 !(e instanceof InvalidLength) &&
                 !(e instanceof PasswordIsWeak) &&
                 !(e instanceof FailedToRenderHash) &&
-                !(e instanceof UserAlreadyExists) &&
-                !(e instanceof UserCreationFailed)
+                !(e instanceof ResourceAlreadyExists) &&
+                !(e instanceof FailedToCreateResource)
             )
                 throw e;
 
@@ -91,7 +93,7 @@ export default class UserService {
 
             finalFilters.fields = ['id', 'username', 'created_at'];
             const results: any = await _model.getUsers(finalFilters);
-            if (!results) throw new CouldNotFindUser();
+            if (!results) throw new CouldNotFindResource();
 
             const response: ISuccessfulResponse = {
                 status: true,
@@ -100,7 +102,10 @@ export default class UserService {
             };
             return response;
         } catch (e) {
-            if (!(e instanceof CouldNotFindUser)) throw e;
+            if (
+                !(e instanceof CouldNotFindResource) &&
+                !(e instanceof InvalidParameterType)
+            ) throw e;
 
             const errorResource: any = { status: false, ...ObjectHandler.getResource(e) };
             const error: IFailedResponse = errorResource;
@@ -125,7 +130,7 @@ export default class UserService {
             _model.setUsername(payload.username);
             const filters: IRequestQueryFilters = { limit: 1 };
             const foundUserResults: any = await _model.getUsers(this._getUserFilters(filters));
-            if (!foundUserResults) throw new CouldNotFindUser();
+            if (!foundUserResults) throw new CouldNotFindResource();
 
             _model.setId(foundUserResults[0].id);
 
@@ -144,7 +149,7 @@ export default class UserService {
                 !(e instanceof ExcessiveBodyProperties) &&
                 !(e instanceof PropertyIsMissing) &&
                 !(e instanceof InvalidPropertyType) &&
-                !(e instanceof CouldNotFindUser) &&
+                !(e instanceof CouldNotFindResource) &&
                 !(e instanceof InvalidPassword)
             )
                 throw e;

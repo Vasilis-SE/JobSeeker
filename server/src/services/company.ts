@@ -1,4 +1,11 @@
-import { CompanyAlreadyExists, CompanyIsAlreadyDeleted, CouldNotDeleteCompany, CouldNotFindCompany, FailedToCreateCompany, FailedToUpdateCompany } from '../exceptions/company';
+import {
+    CouldNotDeleteResource,
+    CouldNotFindResource,
+    FailedToCreateResource,
+    FailedToUpdateResource,
+    ResourceAlreadyExists,
+    ResourceIsAlreadyDeleted,
+} from '../exceptions/resource';
 import {
     ContainsInvalidChars,
     ExcessiveBodyProperties,
@@ -31,12 +38,10 @@ export default class CompanyService {
             if (typeof payload.name !== 'string') throw new InvalidPropertyType('', 'string', 'payload');
             if (!Validator.isNumber(payload.tax_number.toString()))
                 throw new InvalidPropertyType('', 'integer', 'tax_number');
-
             if (Validator.hasSpecialCharacters(payload.name, '_ALL')) throw new ContainsInvalidChars('', 'username');
 
             if (payload.tax_number.toString().length != CompanyGlobals.TAX_NUM_LENGTH)
                 throw new InvalidLength('', 'tax_number', `=${CompanyGlobals.TAX_NUM_LENGTH}`);
-
             if (payload.name.length > CompanyGlobals.NAME_MAXLENGTH)
                 throw new InvalidLength('', 'username', `<=${CompanyGlobals.NAME_MAXLENGTH}`);
 
@@ -44,12 +49,12 @@ export default class CompanyService {
 
             // Check if company already exists.
             const exists = await _model.getCompanies();
-            if (exists) throw new CompanyAlreadyExists();
+            if (exists) throw new ResourceAlreadyExists();
 
             // Populate rest of data & add new company
             _model.setUserId(user.id);
             _model.setCreatedAt(Math.floor(Date.now() / 1000));
-            if (!(await _model.createCompany())) throw new FailedToCreateCompany();
+            if (!(await _model.createCompany())) throw new FailedToCreateResource();
 
             const response: ISuccessfulResponse = {
                 status: true,
@@ -60,14 +65,15 @@ export default class CompanyService {
         } catch (e) {
             if (
                 !(e instanceof PropertyIsMissing) &&
-                !(e instanceof InvalidParameterType) &&
                 !(e instanceof ExcessiveBodyProperties) &&
+                !(e instanceof PropertyIsMissing) &&
                 !(e instanceof InvalidPropertyType) &&
                 !(e instanceof ContainsInvalidChars) &&
                 !(e instanceof InvalidLength) &&
-                !(e instanceof CompanyAlreadyExists) &&
-                !(e instanceof FailedToCreateCompany)
-            ) throw e;
+                !(e instanceof ResourceAlreadyExists) &&
+                !(e instanceof FailedToCreateResource)
+            )
+                throw e;
 
             const errorResource: any = { status: false, ...ObjectHandler.getResource(e) };
             const error: IFailedResponse = errorResource;
@@ -86,10 +92,11 @@ export default class CompanyService {
             if (!('id' in payload) || !payload.id) throw new PropertyIsMissing('', 'id');
             if (!('name' in payload) || !payload.name) throw new PropertyIsMissing('', 'name');
             if (!('tax_number' in payload) || !payload.tax_number) throw new PropertyIsMissing('', 'tax_number');
-            
+
             if (!Validator.isNumber(payload.id.toString())) throw new InvalidPropertyType('', 'integer', 'id');
             if (typeof payload.name !== 'string') throw new InvalidPropertyType('', 'string', 'payload');
-            if (!Validator.isNumber(payload.tax_number.toString())) throw new InvalidPropertyType('', 'integer', 'tax_number');
+            if (!Validator.isNumber(payload.tax_number.toString()))
+                throw new InvalidPropertyType('', 'integer', 'tax_number');
 
             if (Validator.hasSpecialCharacters(payload.name, '_ALL')) throw new ContainsInvalidChars('', 'username');
 
@@ -105,12 +112,12 @@ export default class CompanyService {
 
             // Check if company exists with the given company id and user id.
             const exists = await _model.getCompanies();
-            if (!exists) throw new CouldNotFindCompany();
+            if (!exists) throw new CouldNotFindResource();
 
             // Populate rest of data & add new company
             _model.setName(payload.name);
             _model.setTaxNumber(payload.tax_number);
-            if (!(await _model.updateCompany())) throw new FailedToUpdateCompany();
+            if (!(await _model.updateCompany())) throw new FailedToUpdateResource();
 
             // Since everything went well. Get the previous resource update
             // its values and send it as a response back.
@@ -132,9 +139,10 @@ export default class CompanyService {
                 !(e instanceof InvalidPropertyType) &&
                 !(e instanceof ContainsInvalidChars) &&
                 !(e instanceof InvalidLength) &&
-                !(e instanceof CouldNotFindCompany) &&
-                !(e instanceof FailedToUpdateCompany)
-            ) throw e;
+                !(e instanceof CouldNotFindResource) &&
+                !(e instanceof FailedToUpdateResource)
+            )
+                throw e;
 
             const errorResource: any = { status: false, ...ObjectHandler.getResource(e) };
             const error: IFailedResponse = errorResource;
@@ -152,8 +160,7 @@ export default class CompanyService {
 
             if (!('id' in params) || !params.id) throw new PropertyIsMissing('', 'id');
 
-            if (!Validator.isNumber(params.id.toString()))
-                throw new InvalidPropertyType('', 'integer', 'id');
+            if (!Validator.isNumber(params.id.toString())) throw new InvalidPropertyType('', 'integer', 'id');
 
             const _model = new CompanyModel();
             _model.setId(params.id);
@@ -161,16 +168,14 @@ export default class CompanyService {
 
             // Check if company exists with the given company id and user id.
             const exists = await _model.getCompanies();
-            if (!exists) throw new CouldNotFindCompany();
+            if (!exists) throw new CouldNotFindResource();
 
             // Check if company is already been deleted
-            if(exists[0].deleted_at > 0)
-                throw new CompanyIsAlreadyDeleted();
-            
+            if (exists[0].deleted_at > 0) throw new ResourceIsAlreadyDeleted();
+
             // Soft delte company by settign deleted_at field
             _model.setDeletedAt(Math.floor(Date.now() / 1000));
-            if(!await _model.softRemoveCompany())
-                throw new CouldNotDeleteCompany();
+            if (!(await _model.softRemoveCompany())) throw new CouldNotDeleteResource();
 
             // Since everything went well. Get the previous resource update
             // its values and send it as a response back.
@@ -186,21 +191,21 @@ export default class CompanyService {
             return response;
         } catch (e) {
             if (
-                !(e instanceof InvalidParameterType) && 
-                !(e instanceof ExcessiveBodyProperties) && 
-                !(e instanceof CompanyIsAlreadyDeleted) && 
-                !(e instanceof PropertyIsMissing) && 
-                !(e instanceof InvalidPropertyType) && 
-                !(e instanceof CouldNotFindCompany) && 
-                !(e instanceof CouldNotDeleteCompany) 
-            ) throw e;
-            
+                !(e instanceof InvalidParameterType) &&
+                !(e instanceof ExcessiveBodyProperties) &&
+                !(e instanceof PropertyIsMissing) &&
+                !(e instanceof InvalidPropertyType) &&
+                !(e instanceof CouldNotFindResource) &&
+                !(e instanceof ResourceIsAlreadyDeleted) &&
+                !(e instanceof CouldNotDeleteResource)
+            )
+                throw e;
+
             const errorResource: any = { status: false, ...ObjectHandler.getResource(e) };
             const error: IFailedResponse = errorResource;
             return error;
         }
     }
-
 
     /**
      * Protected class function of CompanyService that is used to clear and gather all the
