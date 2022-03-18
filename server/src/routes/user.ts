@@ -1,11 +1,13 @@
 import { NextFunction, Router } from 'express';
 import BaseController from '../controllers/baseController';
+import LogController from '../controllers/log';
 import UserController from '../controllers/user';
 import { InjectedRequest, InjectedResponse } from '../interfaces/express';
 import Security from '../security/security';
 
 const userRoutes = Router();
 const _security = new Security();
+const _logger = new LogController();
 const _baseController = new BaseController();
 const _controller = new UserController();
 
@@ -27,6 +29,7 @@ userRoutes.get(
 // Route that logins a user.
 userRoutes.post(
     '/login',
+    (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _logger.logIncomingRequest(req, res, next),
     (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _controller.loginUser(req, res, next),
     (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _security.generateUserToken(req, res, next),
     (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _baseController.send(req, res, next),

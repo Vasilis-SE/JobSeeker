@@ -1,7 +1,6 @@
 import { NextFunction } from 'express';
 import { InjectedRequest, InjectedResponse } from '../interfaces/express';
 import { ILogIncomingRequestProperties } from '../interfaces/log';
-import { IFailedResponse, ISuccessfulResponse } from '../interfaces/response';
 import LogService from '../services/log';
 
 /**
@@ -18,12 +17,11 @@ export default class LogController {
     async logIncomingRequest(req: InjectedRequest, res: InjectedResponse, next: NextFunction): Promise<void> {
         const log: ILogIncomingRequestProperties = {
             ip: req.ip,
-            uri: req.url,
-            body: req.body,
+            uri: req.originalUrl,
+            body: JSON.stringify(req.body),
         };
 
-        const response: ISuccessfulResponse | IFailedResponse = await this._service.logIncomingRequests(log);
-        res.response = response;
+        this._service.logIncomingRequests(log);
         next();
     }
 }
