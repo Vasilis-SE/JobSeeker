@@ -14,9 +14,6 @@ export default class RedisClient {
             process.exit(1);
         });
 
-        this.client.on('connect', async () => {
-            console.error(`Redis is connected`);
-            process.exit(1);
-        });
+        console.error(`Redis is connected...`);
     }
 }

@@ -15,7 +15,7 @@ export default class PostgreSQL {
 
             // connecting to database
             await this.client.connect();
-            console.info(`Postgres ${process.env.DATABASE_NAME} is connected...`);
+            console.info(`Postgres is connected...`);
         } catch (error) {
             console.error(`Postgres error: ${error}`);
             process.exit(1);

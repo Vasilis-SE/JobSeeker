@@ -48,6 +48,35 @@ services:
     volumes:
       - ./volumes/redisinsight:/var/lib/redisinsight/db
 
+  elasticsearch:
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.1.0
+    volumes:
+      - ./volumes/esdata:/var/lib/esdata/data
+    environment:
+      - ELASTIC_USERNAME=${ELASTIC_USERNAME}
+      - ELASTIC_PASSWORD=${ELASTIC_PASS}
+      # - bootstrap.memory_lock=true
+      # - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+      - xpack.security.enabled=true
+    logging:
+      driver: none
+    ports:
+      - ${ELASTIC_PORT}:${ELASTIC_PORT}
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.1.0
+    container_name: kibana
+    environment:
+      - ELASTIC_USERNAME=${ELASTIC_USERNAME}
+      - ELASTIC_PASSWORD=${ELASTIC_PASS}
+      - ELASTICSEARCH_URL=${ELASTIC_URL}
+    ports:
+      - ${KIBANA_PORT}:${KIBANA_PORT}
+    depends_on:
+      - elasticsearch
+
 volumes:
   postgresdata:
   pgadmindata:
