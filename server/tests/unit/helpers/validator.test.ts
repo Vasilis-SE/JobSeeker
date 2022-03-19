@@ -1,4 +1,4 @@
-import Validator from "../../src/helpers/validator";
+import Validator from "../../../src/helpers/validator";
 
 describe('Check hasWhitespace function', () => {
     test('Single white space in middle found', () => {

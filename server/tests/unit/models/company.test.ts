@@ -1,8 +1,8 @@
 import fs from 'fs';
-import CompanyModel from '../../src/models/company';
-import PostgreSQL from '../../src/connections/postgres';
-import { IUserProperties } from '../../src/interfaces/user';
-import { ICompanyProperties, IListOfCompanies } from '../../src/interfaces/company';
+import CompanyModel from '../../../src/models/company';
+import PostgreSQL from '../../../src/connections/postgres';
+import { IUserProperties } from '../../../src/interfaces/user';
+import { ICompanyProperties, IListOfCompanies } from '../../../src/interfaces/company';
 
 PostgreSQL.init();
 let _user: IUserProperties = null;
@@ -37,7 +37,7 @@ beforeEach(async () => {
     await getASingleCompany();
 
     companies = JSON.parse(
-        fs.readFileSync(require('path').resolve(__dirname, '../..') + '/mocks/companies.json').toString(),
+        fs.readFileSync(require('path').resolve(__dirname, '../../..') + '/mocks/companies.json').toString(),
     );
 });
 

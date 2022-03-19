@@ -1,4 +1,4 @@
-import {HttpCodes} from '../../src/helpers/httpCodesEnum';
+import {HttpCodes} from '../../../src/helpers/httpCodesEnum';
 
 describe('Check HTTP codes enum for validity and integrity', () => {
     

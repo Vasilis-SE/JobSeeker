@@ -1,7 +1,7 @@
 import fs from 'fs';
-import PostgreSQL from '../../src/connections/postgres';
-import { IListOfUsers } from '../../src/interfaces/user';
-import UserModel from "../../src/models/user";
+import PostgreSQL from '../../../src/connections/postgres';
+import { IListOfUsers } from '../../../src/interfaces/user';
+import UserModel from "../../../src/models/user";
 
 PostgreSQL.init();
 let users: IListOfUsers = [];
@@ -22,7 +22,7 @@ beforeAll(async () => {
 });
   
 beforeEach(async () => {
-    users = JSON.parse(fs.readFileSync(require('path').resolve(__dirname, '../..')+"/mocks/users.json").toString());
+    users = JSON.parse(fs.readFileSync(require('path').resolve(__dirname, '../../..')+"/mocks/users.json").toString());
 });
 
 afterAll(() => {

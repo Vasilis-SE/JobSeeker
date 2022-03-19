@@ -1,8 +1,8 @@
 import fs from 'fs';
-import PostgreSQL from '../../src/connections/postgres';
-import { ICompanyProperties } from '../../src/interfaces/company';
-import { IJobProperties, IListOfJobs } from '../../src/interfaces/job';
-import JobModel from '../../src/models/job';
+import PostgreSQL from '../../../src/connections/postgres';
+import { ICompanyProperties } from '../../../src/interfaces/company';
+import { IJobProperties, IListOfJobs } from '../../../src/interfaces/job';
+import JobModel from '../../../src/models/job';
 
 PostgreSQL.init();
 let _company: ICompanyProperties = null;
@@ -23,7 +23,7 @@ beforeEach(async () => {
     await getASingleJob();
 
     listOfJobs = JSON.parse(
-        fs.readFileSync(require('path').resolve(__dirname, '../..') + '/mocks/jobs.json').toString(),
+        fs.readFileSync(require('path').resolve(__dirname, '../../..') + '/mocks/jobs.json').toString(),
     );
 });
 

@@ -1,12 +1,12 @@
-import ObjectHandler from '../../src/helpers/objectHandler';
-import { IListOfUsers, IUserProperties } from '../../src/interfaces/user';
-import UserModel from '../../src/models/user';
+import ObjectHandler from '../../../src/helpers/objectHandler';
+import { IListOfUsers, IUserProperties } from '../../../src/interfaces/user';
+import UserModel from '../../../src/models/user';
 const fs = require('fs');
 
 let users: IListOfUsers = [];
 
 beforeEach(() => {
-    let rawdata = fs.readFileSync(require('path').resolve(__dirname, '../..')+"/mocks/users.json");
+    let rawdata = fs.readFileSync(require('path').resolve(__dirname, '../../..')+"/mocks/users.json");
     users = JSON.parse(rawdata);
 });
 

@@ -1,5 +1,5 @@
-import { UserGlobals } from "../../src/interfaces/user";
-import UserService from "../../src/services/user";
+import { UserGlobals } from "../../../src/interfaces/user";
+import UserService from "../../../src/services/user";
 
 describe('User service class _getUserFilters function check', () => {
 
