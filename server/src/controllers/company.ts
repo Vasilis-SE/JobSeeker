@@ -27,9 +27,10 @@ export default class CompanyController {
 
     async updateCompany(req: InjectedRequest, res: InjectedResponse, next: NextFunction): Promise<void> {
         const payload: ICompanyProperties = req.body;
+        const params: ICompanyProperties = req.params;
         const user: IUserProperties = req.user;
 
-        const response: ISuccessfulResponse | IFailedResponse = await this._service.updateCompany(payload, user);
+        const response: ISuccessfulResponse | IFailedResponse = await this._service.updateCompany({...params, ...payload}, user);
         res.response = response;
         next();
     }

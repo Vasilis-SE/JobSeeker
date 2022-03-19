@@ -13,6 +13,7 @@ import {
     InvalidParameterType,
     InvalidPropertyType,
     PropertyIsMissing,
+    RequestBodyIsEmpty,
 } from '../exceptions/validation';
 import { HttpCodes } from '../helpers/httpCodesEnum';
 import ObjectHandler from '../helpers/objectHandler';
@@ -82,53 +83,46 @@ export default class CompanyService {
     }
 
     async updateCompany(
-        payload: ICompanyProperties,
+        company: ICompanyProperties,
         user: IUserProperties,
     ): Promise<ISuccessfulResponse | IFailedResponse> {
         try {
-            const validProperties = ['id', 'name', 'tax_number'];
-            if (Object.keys(payload).length > validProperties.length) throw new ExcessiveBodyProperties();
+            if (Object.keys(company).length <= 1) throw new RequestBodyIsEmpty();
 
-            if (!('id' in payload) || !payload.id) throw new PropertyIsMissing('', 'id');
-            if (!('name' in payload) || !payload.name) throw new PropertyIsMissing('', 'name');
-            if (!('tax_number' in payload) || !payload.tax_number) throw new PropertyIsMissing('', 'tax_number');
+            if (!('id' in company) || !company.id) throw new PropertyIsMissing('', 'id');
 
-            if (!Validator.isNumber(payload.id.toString())) throw new InvalidPropertyType('', 'integer', 'id');
-            if (typeof payload.name !== 'string') throw new InvalidPropertyType('', 'string', 'payload');
-            if (!Validator.isNumber(payload.tax_number.toString()))
+            if (!Validator.isNumber(company.id.toString())) 
+                throw new InvalidPropertyType('', 'integer', 'id');
+            if ('name' in company && typeof company.name !== 'string') 
+                throw new InvalidPropertyType('', 'string', 'name');
+            if ('tax_number' in company && !Validator.isNumber(company.tax_number.toString()))
                 throw new InvalidPropertyType('', 'integer', 'tax_number');
 
-            if (Validator.hasSpecialCharacters(payload.name, '_ALL')) throw new ContainsInvalidChars('', 'username');
+            if ('name' in company && Validator.hasSpecialCharacters(company.name, '_ALL')) 
+                throw new ContainsInvalidChars('', 'username');
 
-            if (payload.tax_number.toString().length != CompanyGlobals.TAX_NUM_LENGTH)
+            if ('tax_number' in company && company.tax_number.toString().length != CompanyGlobals.TAX_NUM_LENGTH)
                 throw new InvalidLength('', 'tax_number', `=${CompanyGlobals.TAX_NUM_LENGTH}`);
-
-            if (payload.name.length > CompanyGlobals.NAME_MAXLENGTH)
+            if ('name' in company && company.name.length > CompanyGlobals.NAME_MAXLENGTH)
                 throw new InvalidLength('', 'username', `<=${CompanyGlobals.NAME_MAXLENGTH}`);
 
+            // Check if company exists.
             const _model = new CompanyModel();
-            _model.setId(payload.id);
+            _model.setId(company.id);
             _model.setUserId(user.id);
 
-            // Check if company exists with the given company id and user id.
             const exists = await _model.getCompanies();
             if (!exists) throw new CouldNotFindResource();
 
             // Populate rest of data & add new company
-            _model.setName(payload.name);
-            _model.setTaxNumber(payload.tax_number);
-            if (!(await _model.updateCompany())) throw new FailedToUpdateResource();
-
-            // Since everything went well. Get the previous resource update
-            // its values and send it as a response back.
-            const resource: ICompanyProperties = exists[0];
-            resource.name = payload.name;
-            resource.tax_number = payload.tax_number;
+            _model._setProperties(company);
+            if (!(await _model.updateCompany())) 
+                throw new FailedToUpdateResource();
 
             const response: ISuccessfulResponse = {
                 status: true,
                 httpCode: HttpCodes.OK,
-                data: ObjectHandler.getResource(resource),
+                data: ObjectHandler.getResource(_model),
             };
             return response;
         } catch (e) {

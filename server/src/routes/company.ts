@@ -20,7 +20,7 @@ companyRoutes.post(
 );
 
 companyRoutes.patch(
-    '/',
+    '/:id([0-9]+)',
     (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _logger.logIncomingRequest(req, res, next),
     (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _security.authenticate(req, res, next),
     (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _controller.updateCompany(req, res, next),
@@ -28,7 +28,7 @@ companyRoutes.patch(
 );
 
 companyRoutes.delete(
-    '/:id',
+    '/:id([0-9]+)',
     (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _logger.logIncomingRequest(req, res, next),
     (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _security.authenticate(req, res, next),
     (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _controller.deleteCompany(req, res, next),

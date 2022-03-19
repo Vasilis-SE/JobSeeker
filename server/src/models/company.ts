@@ -14,7 +14,7 @@ export default class CompanyModel implements ICompany {
         this._setProperties(company);
     }
 
-    private _setProperties(company: ICompanyProperties = {}): void {
+    _setProperties(company: ICompanyProperties = {}): void {
         this.setId(company.id ? company.id : 0);
         this.setUserId(company.userid ? company.userid : 0);
         this.setName(company.name ? company.name : '');
@@ -64,11 +64,22 @@ export default class CompanyModel implements ICompany {
 
     async updateCompany(): Promise<boolean> {
         try {
-            const queryStr = `UPDATE companies SET
-                name = $1, tax_number = $2
-                WHERE id = $3 AND userid = $4`;
-            const query = await PostgreSQL.client.query(queryStr, 
-                [this.getName(), this.getTaxNumber(), this.getId(), this.getUserId()]);
+            const resource: any = ObjectHandler.getResource(this);
+            delete resource.id;
+            delete resource.userid;
+
+            let i = 1;
+            let prepStatements = [];
+            let values = [];
+            for (let [key, value] of Object.entries(resource)) {
+                prepStatements.push(` ${key} = $${i} `);
+                values.push(value);
+                i++;
+            }            
+            values.push(this.getId());
+
+            const queryStr = `UPDATE companies SET ${prepStatements.join(', ')} WHERE id = $${i}`;
+            const query = await PostgreSQL.client.query(queryStr, values);
                 
             if (query.rowCount === 0) throw Error();
             return true;

@@ -1,5 +1,4 @@
 import Validator from "../../src/helpers/validator";
-import { UserGlobals } from "../../src/interfaces/user";
 
 describe('Check hasWhitespace function', () => {
     test('Single white space in middle found', () => {
