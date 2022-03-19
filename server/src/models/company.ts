@@ -46,11 +46,14 @@ export default class CompanyModel implements ICompany {
 
     async createCompany(): Promise<boolean> {
         try {
+            const resource: any = ObjectHandler.getResource(this);
+
             const queryStr = `INSERT INTO companies (userid, name, tax_number, created_at) 
                 VALUES ($1, $2, $3, $4) 
                 RETURNING id`;
+
             const query = await PostgreSQL.client.query(queryStr, 
-                [this.getUserId(), this.getName(), this.getTaxNumber(), this.getCreatedAt()]);
+                [resource.userid, resource.name, resource.tax_number, resource.created_at]);
 
             if (query.rowCount === 0) throw Error();
 

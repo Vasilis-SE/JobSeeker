@@ -1,6 +1,6 @@
 import fs from 'fs';
 import PostgreSQL from '../../src/connections/postgres';
-import { IListOfUsers, IUserProperties } from '../../src/interfaces/user';
+import { IListOfUsers } from '../../src/interfaces/user';
 import UserModel from "../../src/models/user";
 
 PostgreSQL.init();
@@ -11,8 +11,11 @@ const getASingleUser = async () => {
     const query = await PostgreSQL.client.query(`SELECT * FROM users LIMIT 1`);
     user = query.rows[0];
 }
-getASingleUser();
 
+beforeAll(() => {
+    return getASingleUser();
+});
+  
 beforeEach(() => {
     users = JSON.parse(fs.readFileSync(require('path').resolve(__dirname, '../..')+"/mocks/users.json").toString());
 });
@@ -102,21 +105,21 @@ describe('User class instantiation', () => {
 
 describe('Create user functionality', () => {
     test('User is created successfully', async () => {
-        const user = new UserModel(users[0]);
-        user.setCreatedAtStamp(Math.floor(Date.now() / 1000));
-        const result = await user.createUser();
-    
+        const userInst = new UserModel(users[0]);
+        userInst.setCreatedAtStamp(Math.floor(Date.now() / 1000));
+        const result = await userInst.createUser();
+
         expect(result).toBeTruthy();
         expect(result).toBeDefined();
-        expect(user.id).toBeTruthy();
-        expect(user.id).toBeDefined();
-        expect(typeof user.id === 'number').toBeTruthy();    
+        expect(userInst.id).toBeTruthy();
+        expect(userInst.id).toBeDefined();
+        expect(typeof userInst.id === 'number').toBeTruthy();    
     });
 
     test('User with empty password is not created', async () => {
-        const user = new UserModel(users[4]);
-        user.setCreatedAtStamp(Math.floor(Date.now() / 1000));
-        const result = await user.createUser();
+        const userInst = new UserModel(users[4]);
+        userInst.setCreatedAtStamp(Math.floor(Date.now() / 1000));
+        const result = await userInst.createUser();
     
         expect(result).toBeFalsy();
     });
