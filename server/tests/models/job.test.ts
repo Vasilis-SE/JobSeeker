@@ -171,3 +171,52 @@ describe('Create job functionality', () => {
     });
 });
 
+describe('Update job functionality', () => {
+
+    test('Job is updated successfully', async () => {
+        if(_job) {
+            const job = new JobModel({
+                id: _job.id,
+                title: "Some random title tha will change the previous"
+            });
+
+            // Updating data
+            const result1 = await job.updateJob();
+            expect(result1).toBeTruthy();
+            expect(result1).toBeDefined();
+
+            // Check if the data are updated
+            const result2 = await job.getJobs();
+            expect(result2).toBeTruthy();
+            expect(result2).toBeDefined();
+        } else {
+            expect(true).toBeTruthy();
+        }
+    });
+
+});
+
+describe('Delete job functionality', () => {
+
+    test('Job is soft deleted', async () => {
+        if(_job) {
+            const nowStamp = Math.floor(Date.now() / 1000);
+            const job = new JobModel(_job);
+            job.deleted_at = nowStamp;
+
+            const result1 = await job.softRemoveJob();
+            
+            expect(result1).toBeTruthy();
+            expect(result1).toBeDefined();
+
+            // Check if the company is deleted
+            const result2 = await job.getJobs();
+            expect(result2).toBeTruthy();
+            expect(result2).toBeDefined();
+            expect(job.getDeletedAt()).toEqual(nowStamp);
+        } else {
+            expect(true).toBeTruthy();
+        }
+    });
+
+});
