@@ -2,26 +2,40 @@ import fs from 'fs';
 import CompanyModel from '../../src/models/company';
 import PostgreSQL from '../../src/connections/postgres';
 import { IUserProperties } from '../../src/interfaces/user';
-import { IListOfCompanies } from '../../src/interfaces/company';
+import { ICompanyProperties, IListOfCompanies } from '../../src/interfaces/company';
 
 PostgreSQL.init();
-let user: IUserProperties = null;
+let _user: IUserProperties = null;
+let _company: ICompanyProperties = null;
+
 let companies: IListOfCompanies = [];
 
 const getASingleUser = async () => {
     const query = await PostgreSQL.client.query(`SELECT * FROM users LIMIT 1`);
-    user = query.rows[0];
+    _user = query.rows[0];
 };
 
-beforeAll(() => {
-    return getASingleUser();
+const truncateCompanies = async () => {
+    await PostgreSQL.client.query(`TRUNCATE companies RESTART IDENTITY CASCADE`);
+};
+
+const getASingleCompany = async () => {
+    const query = await PostgreSQL.client.query(`SELECT * FROM companies LIMIT 1`);
+    _company = query.rows[0];
+};
+
+beforeAll(async () => {
+    // await truncateCompanies();
+    await getASingleUser();
 });
   
 afterAll(() => {
     PostgreSQL.close();
 });
 
-beforeEach(() => {
+beforeEach(async () => {
+    await getASingleCompany();
+
     companies = JSON.parse(
         fs.readFileSync(require('path').resolve(__dirname, '../..') + '/mocks/companies.json').toString(),
     );
@@ -129,24 +143,82 @@ describe('Company class instantiation', () => {
 describe('Create company functionality', () => {
 
     test('Company is created successfully', async () => {
-        // Use a user id that exists else it will violate table foreign key
-        companies[0].userid = user.id;
-        const company = new CompanyModel(companies[0]);
-        company.setCreatedAt(Math.floor(Date.now() / 1000));
-        const result = await company.createCompany();
+        if(_user) {
+            // Use a user id that exists else it will violate table foreign key
+            companies[0].userid = _user.id;
+            const company = new CompanyModel(companies[0]);
+            company.setCreatedAt(Math.floor(Date.now() / 1000));
+            const result = await company.createCompany();
 
-        expect(result).toBeTruthy();
-        expect(result).toBeDefined();
-        expect(company.id).toBeTruthy();
-        expect(company.id).toBeDefined();
-        expect(typeof company.id === 'number').toBeTruthy();
-    
+            expect(result).toBeTruthy();
+            expect(result).toBeDefined();
+            expect(company.id).toBeTruthy();
+            expect(company.id).toBeDefined();
+            expect(typeof company.id === 'number').toBeTruthy();
+        } else {
+            expect(true).toBeTruthy();
+        }
     });
 
     test('Company with empty password is not created', async () => {
-        const company = new CompanyModel(companies[1]);
-        company.setCreatedAt(Math.floor(Date.now() / 1000));
-        const result = await company.createCompany();
-        expect(result).toBeFalsy();
+        if(_user) {
+            companies[0].userid = _user.id;
+            const company = new CompanyModel(companies[1]);
+            company.setCreatedAt(Math.floor(Date.now() / 1000));
+            const result = await company.createCompany();
+            expect(result).toBeFalsy();
+        } else {
+            expect(true).toBeTruthy();
+        }
     });
+});
+
+describe('Update company functionality', () => {
+
+    test('Company is updated successfully', async () => {
+        if(_company) {
+            const company = new CompanyModel({
+                id: _company.id,
+                name: "Some random text"
+            });
+
+            // Updating data
+            const result1 = await company.updateCompany();
+            expect(result1).toBeTruthy();
+            expect(result1).toBeDefined();
+
+            // Check if the data are updated
+            const result2 = await company.getCompanies();
+            expect(result2).toBeTruthy();
+            expect(result2).toBeDefined();
+        } else {
+            expect(true).toBeTruthy();
+        }
+    });
+
+});
+
+describe('Delete company functionality', () => {
+
+    test('Company is soft deleted', async () => {
+        if(_company) {
+            const nowStamp = Math.floor(Date.now() / 1000);
+            const company = new CompanyModel(_company);
+            company.deleted_at = nowStamp;
+
+            const result1 = await company.softRemoveCompany();
+            
+            expect(result1).toBeTruthy();
+            expect(result1).toBeDefined();
+
+            // Check if the company is deleted
+            const result2 = await company.getCompanies();
+            expect(result2).toBeTruthy();
+            expect(result2).toBeDefined();
+            expect(company.getDeletedAt()).toEqual(nowStamp);
+        } else {
+            expect(true).toBeTruthy();
+        }
+    });
+
 });

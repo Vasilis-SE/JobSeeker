@@ -12,11 +12,16 @@ const getASingleUser = async () => {
     user = query.rows[0];
 }
 
-beforeAll(() => {
-    return getASingleUser();
+const truncateUsers = async () => {
+    await PostgreSQL.client.query(`TRUNCATE users RESTART IDENTITY CASCADE`);
+};
+
+beforeAll(async () => {
+    await getASingleUser();
+    // await truncateUsers();
 });
   
-beforeEach(() => {
+beforeEach(async () => {
     users = JSON.parse(fs.readFileSync(require('path').resolve(__dirname, '../..')+"/mocks/users.json").toString());
 });
 
