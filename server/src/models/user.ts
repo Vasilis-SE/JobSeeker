@@ -26,12 +26,14 @@ export default class UserModel implements IUser {
             const resource = ObjectHandler.getResource(this);
             const wherePart = ObjectHandler.objectToSQLParams(resource, ' AND ');
 
-            const query = await PostgreSQL.client.query(`SELECT 
+            const queryStr = `SELECT 
                 ${filters.fields ? filters.fields.join(', ') : '*'}
                 FROM users 
                 ${wherePart ? `WHERE ${wherePart}` : ''}
                 ${'orderby' in filters ? `ORDER BY ${filters.orderby}` : ''}
-                ${'limit' in filters ? `LIMIT ${filters.limit}` : ''}`);
+                ${'limit' in filters ? `LIMIT ${filters.limit}` : ''}`;
+
+            const query = await PostgreSQL.client.query(queryStr);
             if (query.rowCount === 0) throw Error();
 
             results = query.rows;
@@ -43,9 +45,13 @@ export default class UserModel implements IUser {
 
     async createUser(): Promise<boolean> {
         try {
-            const query = await PostgreSQL.client.query(`INSERT INTO users (username, password, created_at) 
-                VALUES ('${this.getUsername()}', '${this.getPassword()}', ${this.getCreatedAtStamp()})
-                RETURNING id`);
+            const resource: any = ObjectHandler.getResource(this);
+
+            const queryStr = `INSERT INTO users (username, password, created_at) 
+                VALUES ($1, $2, $3)
+                RETURNING id`;
+            const query = await PostgreSQL.client.query(queryStr, 
+                [resource.username, resource.password, resource.created_at]);
             if (query.rowCount === 0) throw Error();
 
             // Set the newly created id
