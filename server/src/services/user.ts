@@ -122,7 +122,7 @@ export default class UserService {
             if (!('password' in payload) || !payload.password) throw new PropertyIsMissing('', 'password');
 
             // Check data types
-            if (typeof payload.username !== 'string') throw new InvalidPropertyType('', 'string', 'email');
+            if (typeof payload.username !== 'string') throw new InvalidPropertyType('', 'string', 'username');
             if (typeof payload.password !== 'string') throw new InvalidPropertyType('', 'string', 'password');
 
             // Create instance of model and search for user based on the username
@@ -173,7 +173,7 @@ export default class UserService {
             };
             return response;
         } catch (e) {
-            if (!(e instanceof ExcessiveBodyProperties))
+            if (!(e instanceof UnableToLogout))
                 throw e;
 
             const errorResource: any = { status: false, ...ObjectHandler.getResource(e) };

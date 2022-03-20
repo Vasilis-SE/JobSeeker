@@ -85,7 +85,7 @@ describe('Check hasUpperCase function', () => {
     });
 
     test('Text without upper case should return false', () => {
-        const response = Validator.hasUpperCase('anemail');
+        const response = Validator.hasUpperCase('someThing');
         expect(response).toBeDefined();
         expect(response).toBeFalsy();
         expect(typeof response).toEqual('boolean');
@@ -108,7 +108,7 @@ describe('Check hasNumbers function', () => {
     });
 
     test('Text without numbers should return false', () => {
-        const response = Validator.hasNumbers('aneMaIL');
+        const response = Validator.hasNumbers('soMEThinG');
         expect(response).toBeDefined();
         expect(response).toBeFalsy();
         expect(typeof response).toEqual('boolean');
