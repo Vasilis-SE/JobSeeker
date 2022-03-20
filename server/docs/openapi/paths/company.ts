@@ -1,21 +1,21 @@
 export = {
-    '/api/v1/user': {
+    '/api/v1/company': {
         post: {
-            tags: ['User Operations'],
-            description: 'Create new user with the given properties on request body.',
-            operationId: 'createUser',
+            tags: ['Company Operations'],
+            description: 'Create new company with the given properties on request body.',
+            operationId: 'createCompany',
             requestBody: {
                 content: {
                     'application/json': {
                         schema: {
-                            $ref: '#/components/schemas/create_user_payload',
+                            $ref: '#/components/schemas/create_company_payload',
                         },
                     },
                 },
             },
             responses: {
                 '201': {
-                    description: 'The user was created and stored successfully',
+                    description: 'The company was created and stored successfully',
                     content: {
                         'application/json': {
                             schema: {
@@ -25,7 +25,7 @@ export = {
                     },
                 },
                 '400': {
-                    description: 'Could not create new user due to invalid data given on request body',
+                    description: 'Could not create new company due to invalid data given on request body',
                     content: {
                         'application/json': {
                             schema: {
@@ -35,7 +35,7 @@ export = {
                     },
                 },
                 '404': {
-                    description: 'Could not find one or more necessary resources to create the user',
+                    description: 'Could not find one or more necessary resources to create the company',
                     content: {
                         'application/json': {
                             schema: {
@@ -45,7 +45,7 @@ export = {
                     },
                 },
                 '500': {
-                    description: 'Could not create new user, something went wrong with the process',
+                    description: 'Could not create new company, something went wrong with the process',
                     content: {
                         'application/json': {
                             schema: {
@@ -57,33 +57,49 @@ export = {
             },
         },
     },
-    '/api/v1/user/login': {
-        post: {
-            tags: ['User Operations'],
-            description: 'Login a user into the system with a given data on request body.',
-            operationId: 'loginUser',
+    '/api/v1/company/{id}': {
+        patch: {
+            tags: ['Company Operations'],
+            description: 'Update a company info with the given properties on request body.',
+            operationId: 'updateCompany',
+            parameters: {
+                id: {
+                    required: true,
+                    $ref: '#/components/schemas/company_id',
+                },
+            },
             requestBody: {
                 content: {
                     'application/json': {
                         schema: {
-                            $ref: '#/components/schemas/user_login',
+                            $ref: '#/components/schemas/update_company_payload',
                         },
                     },
                 },
             },
             responses: {
                 '200': {
-                    description: 'The user logged in successfully',
+                    description: 'The company info changed successfully',
                     content: {
                         'application/json': {
                             schema: {
-                                $ref: '#/components/schemas/response_login_success',
+                                $ref: '#/components/schemas/company',
+                            },
+                        },
+                    },
+                },
+                '400': {
+                    description: 'Could not create new resource due to invalid data given',
+                    content: {
+                        'application/json': {
+                            schema: {
+                                $ref: '#/components/schemas/response_failed_400',
                             },
                         },
                     },
                 },
                 '404': {
-                    description: 'Could not find one or more necessary resources to login user',
+                    description: 'Could not find one or more necessary resources or data',
                     content: {
                         'application/json': {
                             schema: {
@@ -93,7 +109,7 @@ export = {
                     },
                 },
                 '500': {
-                    description: 'Could not login user, something went wrong with the process',
+                    description: 'Could not update resource, an error has occurred',
                     content: {
                         'application/json': {
                             schema: {
@@ -104,25 +120,49 @@ export = {
                 },
             },
         },
-    },
-    '/api/v1/user/logout': {
         delete: {
-            tags: ['User Operations'],
-            description: 'Logout a user from the system given a valid JWT.',
-            operationId: 'logoutUser',
+            tags: ['Company Operations'],
+            description: 'Delete a company that you have created.',
+            operationId: 'deleteCompany',
+            parameters: {
+                id: {
+                    required: true,
+                    $ref: '#/components/schemas/company_id',
+                },
+            },
             responses: {
                 '200': {
-                    description: 'The user logged out successfully',
+                    description: 'The company was deleted successfully',
                     content: {
                         'application/json': {
                             schema: {
-                                $ref: '#/components/schemas/user_logout',
+                                $ref: '#/components/schemas/company',
+                            },
+                        },
+                    },
+                },
+                '400': {
+                    description: 'Could not delete resource due to invalid data given',
+                    content: {
+                        'application/json': {
+                            schema: {
+                                $ref: '#/components/schemas/response_failed_400',
+                            },
+                        },
+                    },
+                },
+                '404': {
+                    description: 'Could not find one or more necessary resources or data',
+                    content: {
+                        'application/json': {
+                            schema: {
+                                $ref: '#/components/schemas/response_failed_404',
                             },
                         },
                     },
                 },
                 '500': {
-                    description: 'Could not logout user, something went wrong with the process',
+                    description: 'Could not delete resource, an error has occurred',
                     content: {
                         'application/json': {
                             schema: {
