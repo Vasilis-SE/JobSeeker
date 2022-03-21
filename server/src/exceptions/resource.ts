@@ -97,3 +97,17 @@ export class FailedToCacheResource implements IException {
         this.httpCode = HttpCodes.SERVER_ERROR;
     }
 }
+
+export class FailedRemoveResourceFromCache implements IException {
+    status: boolean;
+    message: string;
+    errorCode: string;
+    httpCode: number;
+
+    constructor(message?: string) {
+        this.status = false;
+        this.message = message ? message : 'Error occured, while trying to delete resource. Please try again later...';
+        this.errorCode = 'rs8';
+        this.httpCode = HttpCodes.SERVER_ERROR;
+    }
+}

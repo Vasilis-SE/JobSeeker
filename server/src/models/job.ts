@@ -120,6 +120,23 @@ export default class JobModel implements IJob {
         }
     }
 
+    async removeJobFromElastic(): Promise<boolean> {
+        try {
+            const result = await ElasticClient.client.deleteByQuery({
+                index: process.env.ELASTIC_JOB_INDEX,
+                body: {
+                    query: {
+                        match: { id: this.getId() },
+                    },
+                },
+            });
+
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
     async clearJobsFromElastic(): Promise<boolean> {
         try {
             const result = await ElasticClient.client.deleteByQuery({

@@ -1,6 +1,7 @@
 import {
     CouldNotDeleteResource,
     CouldNotFindResource,
+    FailedRemoveResourceFromCache,
     FailedToCacheResource,
     FailedToCreateResource,
     FailedToUpdateResource,
@@ -194,6 +195,10 @@ export default class JobService {
             _model.setDeletedAt(nowStamp);
             if (!(await _model.softRemoveJob())) throw new CouldNotDeleteResource();
 
+            // After successfull deletion of job, remove it also from elastic
+            if(!await _model.removeJobFromElastic())
+                throw new FailedRemoveResourceFromCache();
+
             const response: ISuccessfulResponse = {
                 status: true,
                 httpCode: HttpCodes.OK,
@@ -207,6 +212,7 @@ export default class JobService {
                 !(e instanceof InvalidPropertyType) &&
                 !(e instanceof CouldNotFindResource) &&
                 !(e instanceof ResourceIsAlreadyDeleted) &&
+                !(e instanceof FailedRemoveResourceFromCache) &&
                 !(e instanceof CouldNotDeleteResource)
             )
                 throw e;
