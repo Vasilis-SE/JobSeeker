@@ -15,7 +15,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"testuser1\",\r\n    \"password\": \"aa123456aa\"\r\n}",
+							"raw": "{\r\n    \"username\": \"testuser3\",\r\n    \"password\": \"aa123456aa\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -112,13 +112,13 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjQ3NjI2OTk2LCJleHAiOjE2NDgyMzE3OTZ9.57vWlD6ViwIYiSH2OFWapjvNj96A2B4bGZuiUS6Qac8",
+								"value": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjQ3ODgyODk4LCJleHAiOjE2NDg0ODc2OTh9.NVqWBgqc0C9RFIpYrC5SYA_NpKAKi3pB-lxSQzzSn0A",
 								"type": "default"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Gucci by Gucci\",\r\n    \"tax_number\": 123412342\r\n}",
+							"raw": "{\r\n    \"name\": \"Riffwire\",\r\n    \"tax_number\": 989898432\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -215,13 +215,13 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjQ3NjkwMTM0LCJleHAiOjE2NDgyOTQ5MzR9.bNpe8rJ2wc0dkBhBhKyrplFiWsoY_ZmBbN2xJg58TOA",
+								"value": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjQ3ODg5ODA1LCJleHAiOjE2NDg0OTQ2MDV9.ZVSuk_DyliHb30LZl0AeaPTsuZtIxjyLgAdHO6wjJFc",
 								"type": "default"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"companyid\": 2,\r\n    \"title\": \"HR assistant\",\r\n    \"description\": \"Mature HR assistant needed for high level tech company.\"\r\n}",
+							"raw": "{\r\n    \"companyid\": 1,\r\n    \"title\": \"iOS Developer\",\r\n    \"description\": \"We are looking for an iOS Developer to work for growing Asset Management software company focusing on mobile development on iOS platforms. The ideal candidate will have experience Objective-C and Swift, ideally with at least a couple of years' experience in iOS Development.\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -286,7 +286,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjQ3NjQxMzE2LCJleHAiOjE2NDgyNDYxMTZ9.W6jGvDHlRgMAXecGjxaAZEUhf3XHmALib8tehkLCkh4",
+								"value": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjQ3ODg5ODA1LCJleHAiOjE2NDg0OTQ2MDV9.ZVSuk_DyliHb30LZl0AeaPTsuZtIxjyLgAdHO6wjJFc",
 								"type": "default"
 							}
 						],
@@ -301,6 +301,46 @@
 								"v1",
 								"job",
 								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search most relevant jobs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3100/api/v1/job/search/developer?page=0&limit=4&order=likes&sort=DESC",
+							"host": [
+								"localhost"
+							],
+							"port": "3100",
+							"path": [
+								"api",
+								"v1",
+								"job",
+								"search",
+								"developer"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "4"
+								},
+								{
+									"key": "order",
+									"value": "likes"
+								},
+								{
+									"key": "sort",
+									"value": "DESC"
+								}
 							]
 						}
 					},
