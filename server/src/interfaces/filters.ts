@@ -16,3 +16,8 @@ export enum FilterGlobals {
     QUERY_ORDER_FIELD = 'id',
     QUERY_SORT_METHOD = 'ASC',
 }
+
+export interface IElasticFilters {
+    from: number;
+    size: number;
+}

@@ -1,7 +1,7 @@
 import ElasticClient from '../connections/elastic';
 import PostgreSQL from '../connections/postgres';
 import ObjectHandler from '../helpers/objectHandler';
-import { ISQLFilters } from '../interfaces/filters';
+import { IElasticFilters, ISQLFilters } from '../interfaces/filters';
 import { IJob, IJobProperties, IListOfJobs } from '../interfaces/job';
 
 export default class JobModel implements IJob {
@@ -155,7 +155,10 @@ export default class JobModel implements IJob {
         }
     }
 
-    async searchJobsBasedOnTitleAndDescription(searchQuery: string): Promise<IListOfJobs | boolean> {
+    async searchJobsBasedOnTitleAndDescription(
+        searchQuery: string,
+        filters: IElasticFilters,
+    ): Promise<IListOfJobs | boolean> {
         try {
             let results: IListOfJobs = [];
             const searchResult = await ElasticClient.client.search({
@@ -177,10 +180,11 @@ export default class JobModel implements IJob {
                             ],
                         },
                     },
-                    from: 0,
-                    size: 2,
+                    ...filters,
                 },
             });
+
+            if (searchResult.hits.hits.length == 0) throw new Error();
 
             for (let jobHit of searchResult.hits.hits) {
                 results.push(jobHit._source);

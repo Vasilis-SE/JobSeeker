@@ -1,5 +1,5 @@
 import { InvalidParameterType } from '../exceptions/validation';
-import { FilterGlobals, IQueryFilters, ISQLFilters } from '../interfaces/filters';
+import { FilterGlobals, IElasticFilters, IQueryFilters, ISQLFilters } from '../interfaces/filters';
 import Validator from './validator';
 
 export default class Filters {
@@ -29,7 +29,27 @@ export default class Filters {
         return final;
     }
 
-    static _elasticFilters(filters: IQueryFilters) {
+    static _elasticFilters(filters: IQueryFilters): IElasticFilters {
+        const final: IElasticFilters = {
+            from: 0,
+            size: 0
+        };
 
+        let page = 0;
+        if('page' in filters && filters.page) {
+            if (!Validator.isNumber(filters.page.toString())) throw new InvalidParameterType('', 'page', 'number');
+            page = Number(filters.page);
+        }
+
+        let limit = FilterGlobals.QUERY_LENGTH;
+        if ('limit' in filters && filters.limit) {
+            if (!Validator.isNumber(filters.limit.toString())) throw new InvalidParameterType('', 'limit', 'number');
+            limit = Number(filters.limit);
+        }
+
+        final.from = page * limit;
+        final.size = limit;
+
+        return final;
     }
 }

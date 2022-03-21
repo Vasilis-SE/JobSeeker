@@ -17,6 +17,7 @@ import {
     PropertyIsMissing,
     RequestBodyIsEmpty,
 } from '../exceptions/validation';
+import Filters from '../helpers/filters';
 import { HttpCodes } from '../helpers/httpCodesEnum';
 import ObjectHandler from '../helpers/objectHandler';
 import Validator from '../helpers/validator';
@@ -196,8 +197,7 @@ export default class JobService {
             if (!(await _model.softRemoveJob())) throw new CouldNotDeleteResource();
 
             // After successfull deletion of job, remove it also from elastic
-            if(!await _model.removeJobFromElastic())
-                throw new FailedRemoveResourceFromCache();
+            if (!(await _model.removeJobFromElastic())) throw new FailedRemoveResourceFromCache();
 
             const response: ISuccessfulResponse = {
                 status: true,
@@ -227,9 +227,12 @@ export default class JobService {
         try {
             if (!search || !('query' in search)) throw new PropertyIsMissing('', 'query');
             if (Validator.hasSpecialCharacters(search.query, '_ALLEXCDD')) throw new ContainsInvalidChars('', 'query');
-            
+
             const _model = new JobModel();
-            const results = await _model.searchJobsBasedOnTitleAndDescription(search.query);
+            const results = await _model.searchJobsBasedOnTitleAndDescription(
+                search.query,
+                Filters._elasticFilters(query),
+            );
             if (!results) throw new CouldNotFindResource();
 
             const response: ISuccessfulResponse = {
