@@ -10,10 +10,3 @@ export interface InjectedRequest extends Request {
 export interface InjectedResponse extends Response {
     response: ISuccessfulResponse | IFailedResponse;
 }
-
-export interface IRequestQueryFilters {
-    page?: number;
-    limit?: number;
-    order?: string;
-    sort?: string;
-}

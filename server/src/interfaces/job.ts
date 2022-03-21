@@ -28,16 +28,7 @@ export interface IJobSearch {
 }
 
 export enum JobGlobals {
-    TITLE_MAXLENGTH = 60,
-    QUERY_LENGTH = 10,
-    QUERY_ORDER_FIELD = 'id',
-    QUERY_SORT_METHOD = 'ASC',
-}
-
-export interface IJobFilters {
-    fields?: Array<string>;
-    orderby?: string;
-    limit?: string;
+    TITLE_MAXLENGTH = 60
 }
 
 export type IListOfJobs = Array<IJobProperties>;

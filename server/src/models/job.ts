@@ -1,7 +1,8 @@
 import ElasticClient from '../connections/elastic';
 import PostgreSQL from '../connections/postgres';
 import ObjectHandler from '../helpers/objectHandler';
-import { IJob, IJobFilters, IJobProperties, IListOfJobs } from '../interfaces/job';
+import { ISQLFilters } from '../interfaces/filters';
+import { IJob, IJobProperties, IListOfJobs } from '../interfaces/job';
 
 export default class JobModel implements IJob {
     id!: number;
@@ -24,7 +25,7 @@ export default class JobModel implements IJob {
         this.setDeletedAt(job.deleted_at ? job.deleted_at : 0);
     }
 
-    async getJobs(filters: IJobFilters = {}): Promise<IListOfJobs | boolean> {
+    async getJobs(filters: ISQLFilters = {}): Promise<IListOfJobs | boolean> {
         try {
             let results: IListOfJobs = [];
             const resource = ObjectHandler.getResource(this);
@@ -176,6 +177,8 @@ export default class JobModel implements IJob {
                             ],
                         },
                     },
+                    from: 0,
+                    size: 2,
                 },
             });
 

@@ -18,8 +18,7 @@ import {
 import { HttpCodes } from '../helpers/httpCodesEnum';
 import ObjectHandler from '../helpers/objectHandler';
 import Validator from '../helpers/validator';
-import { CompanyGlobals, ICompanyFilters, ICompanyProperties } from '../interfaces/company';
-import { IRequestQueryFilters } from '../interfaces/express';
+import { CompanyGlobals, ICompanyProperties } from '../interfaces/company';
 import { IFailedResponse, ISuccessfulResponse } from '../interfaces/response';
 import { IUserProperties } from '../interfaces/user';
 import CompanyModel from '../models/company';
@@ -199,38 +198,5 @@ export default class CompanyService {
             const error: IFailedResponse = errorResource;
             return error;
         }
-    }
-
-    /**
-     * Protected class function of CompanyService that is used to clear and gather all the
-     * filter data needed. Filters are used for managing queries on database. For example
-     * ordering a query, calculating the 'chunk' of data to return for pagination etc.
-     * @param filters Object of IRequestQueryFilters interface that contains the filters.
-     * @returns Object of ICompanyFilters interface which contains the final filters a query will use.
-     */
-    public _getCompanyFilters(filters: IRequestQueryFilters): ICompanyFilters {
-        const final: ICompanyFilters = {};
-
-        // Set order by filter
-        final.orderby = `${CompanyGlobals.QUERY_ORDER_FIELD} ${CompanyGlobals.QUERY_SORT_METHOD}`;
-        if ('order' in filters && filters.order && 'sort' in filters && filters.sort)
-            final.orderby = `${filters.order} ${filters.sort}`;
-
-        let page = 0;
-        if ('page' in filters && filters.page) {
-            if (!Validator.isNumber(filters.page.toString())) throw new InvalidParameterType('', 'page', 'number');
-            page = Number(filters.page);
-        }
-
-        let limit = CompanyGlobals.QUERY_LENGTH;
-        if ('limit' in filters && filters.limit) {
-            if (!Validator.isNumber(filters.limit.toString())) throw new InvalidParameterType('', 'limit', 'number');
-            limit = Number(filters.limit);
-        }
-
-        const offset = page * limit;
-        final.limit = `${limit} OFFSET ${offset}`;
-
-        return final;
     }
 }

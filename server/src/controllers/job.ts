@@ -1,5 +1,6 @@
 import { NextFunction } from 'express';
 import { InjectedRequest, InjectedResponse } from '../interfaces/express';
+import { IQueryFilters } from '../interfaces/filters';
 import { IJobProperties, IJobSearch } from '../interfaces/job';
 import { IFailedResponse, ISuccessfulResponse } from '../interfaces/response';
 import { IUserProperties } from '../interfaces/user';
@@ -17,8 +18,9 @@ export default class JobController {
     }
 
     async searchJobs(req: InjectedRequest, res: InjectedResponse, next: NextFunction): Promise<void> {
-        const params: any = req.query;
-        const response: ISuccessfulResponse | IFailedResponse = await this._service.searchJobs(params);
+        const params: any = req.params;
+        const filters: IQueryFilters = req.query;
+        const response: ISuccessfulResponse | IFailedResponse = await this._service.searchJobs(params, filters);
         res.response = response;
         next();
     }
