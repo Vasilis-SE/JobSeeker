@@ -11,6 +11,10 @@ const _logger = new LogController();
 const _baseController = new BaseController();
 const _controller = new CompanyController();
 
+/**
+ * Route that handles the creation of a company.
+ * @access /api/v1/company
+ */
 companyRoutes.post(
     '/',
     (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _logger.logIncomingRequest(req, res, next),
@@ -19,6 +23,10 @@ companyRoutes.post(
     (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _baseController.send(req, res, next),
 );
 
+/**
+ * Route that handles the update of a company.
+ * @access /api/v1/company/1
+ */
 companyRoutes.patch(
     '/:id([0-9]+)',
     (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _logger.logIncomingRequest(req, res, next),
@@ -27,6 +35,10 @@ companyRoutes.patch(
     (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _baseController.send(req, res, next),
 );
 
+/**
+ * Route that handles the deletion of a company.
+ * @access /api/v1/company
+ */
 companyRoutes.delete(
     '/:id([0-9]+)',
     (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _logger.logIncomingRequest(req, res, next),

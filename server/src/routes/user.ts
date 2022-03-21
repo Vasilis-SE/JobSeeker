@@ -11,7 +11,10 @@ const _logger = new LogController();
 const _baseController = new BaseController();
 const _controller = new UserController();
 
-// Route that creates a new user.
+/**
+ * Route that handles the creation of a user.
+ * @access /api/v1/user
+ */
 userRoutes.post(
     '/',
     (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _logger.logIncomingRequest(req, res, next),
@@ -19,7 +22,10 @@ userRoutes.post(
     (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _baseController.send(req, res, next),
 );
 
-// Route that fetches a user's profile.
+/**
+ * Route that handles the retrieval of user's profile.
+ * @access /api/v1/user/profile
+ */
 userRoutes.get(
     '/profile',
     (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _logger.logIncomingRequest(req, res, next),
@@ -28,7 +34,10 @@ userRoutes.get(
     (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _baseController.send(req, res, next),
 );
 
-// Route that logins a user.
+/**
+ * Route that handles the login of a user.
+ * @access /api/v1/user/login
+ */
 userRoutes.post(
     '/login',
     (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _logger.logIncomingRequest(req, res, next),
@@ -37,7 +46,10 @@ userRoutes.post(
     (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _baseController.send(req, res, next),
 );
 
-// Route that logins a user.
+/**
+ * Route that handles the logout of a user.
+ * @access /api/v1/user/logout
+ */
 userRoutes.delete(
     '/logout',
     (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _logger.logIncomingRequest(req, res, next),

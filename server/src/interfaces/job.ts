@@ -23,6 +23,10 @@ export interface IJob extends IJobProperties {
     setDeletedAt(deleted_at: number): void;
 }
 
+export interface IJobSearch {
+    query: string;
+}
+
 export enum JobGlobals {
     TITLE_MAXLENGTH = 60,
     QUERY_LENGTH = 10,

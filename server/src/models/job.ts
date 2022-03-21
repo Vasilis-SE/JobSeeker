@@ -126,12 +126,47 @@ export default class JobModel implements IJob {
                 index: process.env.ELASTIC_JOB_INDEX,
                 body: {
                     query: {
-                        match_all: {}
-                    }
-                }
-            })
+                        match_all: {},
+                    },
+                },
+            });
 
             return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    async searchJobsBasedOnTitleAndDescription(searchQuery: string): Promise<IListOfJobs | boolean> {
+        try {
+            let results: IListOfJobs = [];
+            const searchResult = await ElasticClient.client.search({
+                index: process.env.ELASTIC_JOB_INDEX,
+                body: {
+                    query: {
+                        bool: {
+                            must: [
+                                {
+                                    match: {
+                                        title: searchQuery,
+                                    },
+                                },
+                                {
+                                    match: {
+                                        description: searchQuery,
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                },
+            });
+
+            for (let jobHit of searchResult.hits.hits) {
+                results.push(jobHit._source);
+            }
+
+            return results;
         } catch (error) {
             return false;
         }

@@ -20,7 +20,7 @@ import { HttpCodes } from '../helpers/httpCodesEnum';
 import ObjectHandler from '../helpers/objectHandler';
 import Validator from '../helpers/validator';
 import { IRequestQueryFilters } from '../interfaces/express';
-import { IJobFilters, IJobProperties, JobGlobals } from '../interfaces/job';
+import { IJobFilters, IJobProperties, IJobSearch, JobGlobals } from '../interfaces/job';
 import { IFailedResponse, ISuccessfulResponse } from '../interfaces/response';
 import { IUserProperties } from '../interfaces/user';
 import CompanyModel from '../models/company';
@@ -66,10 +66,10 @@ export default class JobService {
             // Populate rest of data & add new job
             _model.setDescription(payload.description);
             _model.setCreatedAt(Math.floor(Date.now() / 1000));
-            if (!await _model.createJob()) throw new FailedToCreateResource();
+            if (!(await _model.createJob())) throw new FailedToCreateResource();
 
             // After successful creation add the job to elastic
-            if(!await _model.addJobToElastic()) throw new FailedToCacheResource();
+            if (!(await _model.addJobToElastic())) throw new FailedToCacheResource();
 
             const response: ISuccessfulResponse = {
                 status: true,
@@ -208,6 +208,36 @@ export default class JobService {
                 !(e instanceof CouldNotFindResource) &&
                 !(e instanceof ResourceIsAlreadyDeleted) &&
                 !(e instanceof CouldNotDeleteResource)
+            )
+                throw e;
+
+            const errorResource: any = { status: false, ...ObjectHandler.getResource(e) };
+            const error: IFailedResponse = errorResource;
+            return error;
+        }
+    }
+
+    async searchJobs(search: IJobSearch): Promise<ISuccessfulResponse | IFailedResponse> {
+        try {
+            if (!search || !('query' in search)) throw new PropertyIsMissing('', 'query');
+            if (Validator.hasSpecialCharacters(search.query, '_ALLEXCDD')) throw new ContainsInvalidChars('', 'query');
+            
+            const _model = new JobModel();
+            const results = await _model.searchJobsBasedOnTitleAndDescription(search.query);
+            if (!results) throw new CouldNotFindResource();
+
+            const response: ISuccessfulResponse = {
+                status: true,
+                httpCode: HttpCodes.OK,
+                data: ObjectHandler.getResource(results),
+            };
+            return response;
+        } catch (e) {
+            if (
+                !(e instanceof InvalidParameterType) &&
+                !(e instanceof PropertyIsMissing) &&
+                !(e instanceof ContainsInvalidChars) &&
+                !(e instanceof CouldNotFindResource)
             )
                 throw e;
 
