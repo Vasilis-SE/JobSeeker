@@ -1,3 +1,4 @@
+import ElasticClient from '../connections/elastic';
 import PostgreSQL from '../connections/postgres';
 import ObjectHandler from '../helpers/objectHandler';
 import { IJob, IJobFilters, IJobProperties, IListOfJobs } from '../interfaces/job';
@@ -100,6 +101,36 @@ export default class JobModel implements IJob {
                 WHERE id = $2`;
             const query = await PostgreSQL.client.query(queryStr, [this.getDeletedAt(), this.getId()]);
             if (query.rowCount === 0) throw Error();
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    async addJobToElastic(): Promise<boolean> {
+        try {
+            const result = await ElasticClient.client.index({
+                index: process.env.ELASTIC_JOB_INDEX,
+                body: ObjectHandler.getResource(this),
+            });
+
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    async clearJobsFromElastic(): Promise<boolean> {
+        try {
+            const result = await ElasticClient.client.deleteByQuery({
+                index: process.env.ELASTIC_JOB_INDEX,
+                body: {
+                    query: {
+                        match_all: {}
+                    }
+                }
+            })
+
             return true;
         } catch (error) {
             return false;

@@ -1,6 +1,7 @@
 import {
     CouldNotDeleteResource,
     CouldNotFindResource,
+    FailedToCacheResource,
     FailedToCreateResource,
     FailedToUpdateResource,
     ResourceAlreadyExists,
@@ -65,7 +66,10 @@ export default class JobService {
             // Populate rest of data & add new job
             _model.setDescription(payload.description);
             _model.setCreatedAt(Math.floor(Date.now() / 1000));
-            if (!(await _model.createJob())) throw new FailedToCreateResource();
+            if (!await _model.createJob()) throw new FailedToCreateResource();
+
+            // After successful creation add the job to elastic
+            if(!await _model.addJobToElastic()) throw new FailedToCacheResource();
 
             const response: ISuccessfulResponse = {
                 status: true,
@@ -83,6 +87,7 @@ export default class JobService {
                 !(e instanceof ContainsInvalidChars) &&
                 !(e instanceof CouldNotFindResource) &&
                 !(e instanceof ResourceAlreadyExists) &&
+                !(e instanceof FailedToCacheResource) &&
                 !(e instanceof FailedToCreateResource)
             )
                 throw e;

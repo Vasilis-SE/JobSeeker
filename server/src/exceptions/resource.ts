@@ -83,3 +83,17 @@ export class ResourceIsAlreadyDeleted implements IException {
         this.httpCode = HttpCodes.BAD_REQUEST;
     }
 }
+
+export class FailedToCacheResource implements IException {
+    status: boolean;
+    message: string;
+    errorCode: string;
+    httpCode: number;
+
+    constructor(message?: string) {
+        this.status = false;
+        this.message = message ? message : 'Error occured, while trying to create resource. Please try again later...';
+        this.errorCode = 'rs7';
+        this.httpCode = HttpCodes.SERVER_ERROR;
+    }
+}
