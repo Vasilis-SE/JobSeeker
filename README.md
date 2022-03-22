@@ -20,6 +20,13 @@
     Also all the Postman request to the API are provider in the folder <code>postman</code> in /server/postman.
 </p>
 
+<p>
+    The current API also contains documentation (by using Open API standards) by venturing to 
+    <code>http://localhost:3100/api/v1/documentation/#/</code> once the api is up and running.
+    This documentation contains in depth analysis on how to request data from the end points, 
+    what to expect, what errors can be returned as well as the available environments used.
+</p>
+
 ## Technologies 
 
 <p>

@@ -113,7 +113,7 @@ export default class JobService {
             if ('description' in job && typeof job.description !== 'string')
                 throw new InvalidPropertyType('', 'string', 'description');
 
-            if ('title' in job && job.title.length != JobGlobals.TITLE_MAXLENGTH)
+            if ('title' in job && job.title.length > JobGlobals.TITLE_MAXLENGTH)
                 throw new InvalidLength('', 'title', `>=${JobGlobals.TITLE_MAXLENGTH}`);
 
             if ('title' in job && Validator.hasSpecialCharacters(job.title, '_ALLEXCDD'))
@@ -141,7 +141,7 @@ export default class JobService {
             // Populate data & update
             _model._setProperties(job);
 
-            if (!(await _model.updateJob())) throw new FailedToUpdateResource();
+            if (!await _model.updateJob() || !await _model.updateJobFromElastic()) throw new FailedToUpdateResource();
 
             const response: ISuccessfulResponse = {
                 status: true,
@@ -223,14 +223,14 @@ export default class JobService {
         }
     }
 
-    async searchJobs(search: IJobSearch, query: IQueryFilters): Promise<ISuccessfulResponse | IFailedResponse> {
+    async searchJobs(search: string, query: IQueryFilters): Promise<ISuccessfulResponse | IFailedResponse> {
         try {
-            if (!search || !('query' in search)) throw new PropertyIsMissing('', 'query');
-            if (Validator.hasSpecialCharacters(search.query, '_ALLEXCDD')) throw new ContainsInvalidChars('', 'query');
+            if (!search) throw new PropertyIsMissing('', 'query');
+            if (Validator.hasSpecialCharacters(search, '_ALLEXCDD')) throw new ContainsInvalidChars('', 'query');
 
             const _model = new JobModel();
             const results = await _model.searchJobsBasedOnTitleAndDescription(
-                search.query,
+                search,
                 Filters._elasticFilters(query),
             );
             if (!results) throw new CouldNotFindResource();

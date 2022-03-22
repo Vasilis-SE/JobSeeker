@@ -52,7 +52,7 @@ jobRoutes.delete(
  * @access /api/v1/job/search
  */
 jobRoutes.get(
-    '/search/:query([a-zA-Z0-9]+)',
+    '/search',
     (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _logger.logIncomingRequest(req, res, next),
     (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _controller.searchJobs(req, res, next),
     (req: InjectedRequest, res: InjectedResponse, next: NextFunction) => _baseController.send(req, res, next),

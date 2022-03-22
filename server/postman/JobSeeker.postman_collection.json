@@ -15,7 +15,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"testuser3\",\r\n    \"password\": \"aa123456aa\"\r\n}",
+							"raw": "{\r\n    \"username\": \"testuser7\",\r\n    \"password\": \"aa123456aa\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -44,7 +44,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"testuser1\",\r\n    \"password\": \"aa123456aa\"\r\n}",
+							"raw": "{\r\n    \"username\": \"testuser6\",\r\n    \"password\": \"aa123456aa\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -80,7 +80,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OTQsImlhdCI6MTY0Nzc3NzEzMywiZXhwIjoxNjQ4MzgxOTMzfQ.5_LU6MQEa3W3lmO5RQe9cCFsfuBQNFkRx5V_QXDqZkU",
+								"value": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiaWF0IjoxNjQ3OTYwNTk3LCJleHAiOjE2NDg1NjUzOTd9.3sISenomAbbsEnAeazorYNEUbByPRm1k9Mtw6E_t3jk",
 								"type": "default"
 							}
 						],
@@ -112,13 +112,13 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjQ3ODgyODk4LCJleHAiOjE2NDg0ODc2OTh9.NVqWBgqc0C9RFIpYrC5SYA_NpKAKi3pB-lxSQzzSn0A",
+								"value": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiaWF0IjoxNjQ3OTYwNjYyLCJleHAiOjE2NDg1NjU0NjJ9.g6MHtClEPSxD6_zLKhX5B1yXbkLOd0cGpvPsBlXSlkE",
 								"type": "default"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Riffwire\",\r\n    \"tax_number\": 989898432\r\n}",
+							"raw": "{\r\n    \"name\": \"Cogilith\",\r\n    \"tax_number\": 100654320\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -147,13 +147,13 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjQ3Njg0MDMxLCJleHAiOjE2NDgyODg4MzF9.9JIugPZWSX7bz_naSsm2mTNQ1MZeXDe8-qa1u1gtbzE",
+								"value": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiaWF0IjoxNjQ3OTYwNjYyLCJleHAiOjE2NDg1NjU0NjJ9.g6MHtClEPSxD6_zLKhX5B1yXbkLOd0cGpvPsBlXSlkE",
 								"type": "default"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"tax_number\": 568743560\r\n}",
+							"raw": "{\r\n    \"tax_number\": 328954675\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -161,7 +161,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3100/api/v1/company/2",
+							"raw": "localhost:3100/api/v1/company/4",
 							"host": [
 								"localhost"
 							],
@@ -170,7 +170,7 @@
 								"api",
 								"v1",
 								"company",
-								"2"
+								"4"
 							]
 						}
 					},
@@ -183,12 +183,12 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjQ3NjIzNjY3LCJleHAiOjE2NDgyMjg0Njd9.8PuOOJi2cGAyxalLkj6VkMlfV6SD8rT4aI0dketfvOg",
+								"value": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiaWF0IjoxNjQ3OTYwNjYyLCJleHAiOjE2NDg1NjU0NjJ9.g6MHtClEPSxD6_zLKhX5B1yXbkLOd0cGpvPsBlXSlkE",
 								"type": "default"
 							}
 						],
 						"url": {
-							"raw": "localhost:3100/api/v1/company/2",
+							"raw": "localhost:3100/api/v1/company/4",
 							"host": [
 								"localhost"
 							],
@@ -197,7 +197,7 @@
 								"api",
 								"v1",
 								"company",
-								"2"
+								"4"
 							]
 						}
 					},
@@ -215,13 +215,13 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjQ3ODg5ODA1LCJleHAiOjE2NDg0OTQ2MDV9.ZVSuk_DyliHb30LZl0AeaPTsuZtIxjyLgAdHO6wjJFc",
+								"value": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiaWF0IjoxNjQ3OTYwNjYyLCJleHAiOjE2NDg1NjU0NjJ9.g6MHtClEPSxD6_zLKhX5B1yXbkLOd0cGpvPsBlXSlkE",
 								"type": "default"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"companyid\": 1,\r\n    \"title\": \"iOS Developer\",\r\n    \"description\": \"We are looking for an iOS Developer to work for growing Asset Management software company focusing on mobile development on iOS platforms. The ideal candidate will have experience Objective-C and Swift, ideally with at least a couple of years' experience in iOS Development.\"\r\n}",
+							"raw": "{\r\n    \"companyid\": 3,\r\n    \"title\": \"HR assistant\",\r\n    \"description\": \"HR assistant with minimum three years of relevant experience is needed.\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -250,13 +250,13 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjQ3NjIzNjY3LCJleHAiOjE2NDgyMjg0Njd9.8PuOOJi2cGAyxalLkj6VkMlfV6SD8rT4aI0dketfvOg",
+								"value": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiaWF0IjoxNjQ3OTYwNjYyLCJleHAiOjE2NDg1NjU0NjJ9.g6MHtClEPSxD6_zLKhX5B1yXbkLOd0cGpvPsBlXSlkE",
 								"type": "default"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"companyid\": 2,\r\n    \"description\": \"Senior backend software engineer for NodeJS excellent knowledge of express.js.\"\r\n}",
+							"raw": "{\r\n    \"description\": \"We are looking for an Android Developer to work for growing Asset Management software company focusing on mobile development on Android platforms. The ideal candidate will have experience Objective C and Swift, ideally with at least a couple of years experience in Android Development.\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -264,7 +264,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3100/api/v1/job/1",
+							"raw": "localhost:3100/api/v1/job/3",
 							"host": [
 								"localhost"
 							],
@@ -273,7 +273,7 @@
 								"api",
 								"v1",
 								"job",
-								"1"
+								"3"
 							]
 						}
 					},
@@ -286,7 +286,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjQ3ODg5ODA1LCJleHAiOjE2NDg0OTQ2MDV9.ZVSuk_DyliHb30LZl0AeaPTsuZtIxjyLgAdHO6wjJFc",
+								"value": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiaWF0IjoxNjQ3OTYwNjYyLCJleHAiOjE2NDg1NjU0NjJ9.g6MHtClEPSxD6_zLKhX5B1yXbkLOd0cGpvPsBlXSlkE",
 								"type": "default"
 							}
 						],
@@ -312,7 +312,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:3100/api/v1/job/search/developer?page=0&limit=4&order=likes&sort=DESC",
+							"raw": "localhost:3100/api/v1/job/search?query=software developer&page=0&limit=4&order=likes&sort=DESC",
 							"host": [
 								"localhost"
 							],
@@ -321,10 +321,13 @@
 								"api",
 								"v1",
 								"job",
-								"search",
-								"developer"
+								"search"
 							],
 							"query": [
+								{
+									"key": "query",
+									"value": "software developer"
+								},
 								{
 									"key": "page",
 									"value": "0"

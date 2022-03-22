@@ -112,6 +112,7 @@ export default class JobModel implements IJob {
         try {
             const result = await ElasticClient.client.index({
                 index: process.env.ELASTIC_JOB_INDEX,
+                id: this.getId(),
                 body: ObjectHandler.getResource(this),
             });
 
@@ -129,6 +130,22 @@ export default class JobModel implements IJob {
                     query: {
                         match: { id: this.getId() },
                     },
+                },
+            });
+
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    async updateJobFromElastic(): Promise<boolean> {
+        try {
+            const result = await ElasticClient.client.update({
+                index: process.env.ELASTIC_JOB_INDEX,
+                id: this.getId(),
+                body: {
+                    doc: ObjectHandler.getResource(this),
                 },
             });
 

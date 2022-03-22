@@ -18,9 +18,9 @@ export default class JobController {
     }
 
     async searchJobs(req: InjectedRequest, res: InjectedResponse, next: NextFunction): Promise<void> {
-        const params: any = req.params;
+        const searchQuery: string = req.query.query.toString();
         const filters: IQueryFilters = req.query;
-        const response: ISuccessfulResponse | IFailedResponse = await this._service.searchJobs(params, filters);
+        const response: ISuccessfulResponse | IFailedResponse = await this._service.searchJobs(searchQuery, filters);
         res.response = response;
         next();
     }
